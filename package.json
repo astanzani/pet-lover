@@ -8,6 +8,7 @@
     "graphql": "^15.5.1"
   },
   "devDependencies": {
+    "@types/serverless": "^1.78.33",
     "serverless-offline": "^8.0.0",
     "serverless-webpack": "^5.5.1",
     "ts-loader": "^9.2.5",
