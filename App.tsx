@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Auth } from '@aws-amplify/auth';
 import { REACT_APP_USER_POOL_ID, REACT_APP_USER_POOL_CLIENT_ID } from '@env';
 
-import { Feed, SignIn } from './src/screens';
+import { Feed, SignIn } from '@screens';
 
 Auth.configure({
   userPoolId: REACT_APP_USER_POOL_ID,
