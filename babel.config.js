@@ -10,6 +10,11 @@ module.exports = function (api) {
           root: ['./'],
           alias: {
             '@screens': './src/screens',
+            '@navigation': './src/navigation',
+            '@components': './src/components',
+            '@hooks': './src/hooks',
+            '@config': './src/config',
+            '@types': './src/types',
           },
           extensions: [
             '.ios.js',

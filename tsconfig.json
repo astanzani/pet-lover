@@ -2,9 +2,13 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "typeRoots": ["./src/types"],
     "paths": {
-      "@screens": ["./src/screens"]
+      "@screens": ["./src/screens"],
+      "@navigation": ["./src/navigation"],
+      "@components": ["./src/components"],
+      "@hooks": ["./src/hooks"],
+      "@config": ["./src/config"],
+      "@types": ["./src/types"]
     }
   }
 }
