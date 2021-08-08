@@ -1,4 +1,8 @@
 import { DefaultTheme } from 'react-native-paper';
+import {
+  DefaultTheme as NavigationDefaultTheme,
+  Theme as NavigationTheme,
+} from '@react-navigation/native';
 
 type Spacing = (spacing: number) => number;
 
@@ -32,3 +36,15 @@ export const lightTheme: ReactNativePaper.Theme = {
     accent: '#f48fb1',
   },
 };
+
+export function mapToNavigationTheme(
+  theme: ReactNativePaper.Theme
+): NavigationTheme {
+  return {
+    dark: theme.dark,
+    colors: {
+      ...NavigationDefaultTheme.colors,
+      primary: theme.colors.primary,
+    },
+  };
+}

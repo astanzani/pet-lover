@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { Text } from 'react-native';
 import { Auth } from '@aws-amplify/auth';
 import { REACT_APP_USER_POOL_ID, REACT_APP_USER_POOL_CLIENT_ID } from '@env';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuthStatus } from '@hooks';
 import { AuthStatus } from '@types';
@@ -17,9 +18,9 @@ export function Main() {
 
   if (authStatus === AuthStatus.Loading) {
     return (
-      <View>
+      <SafeAreaView>
         <Text>Loading...</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 

@@ -3,7 +3,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { RootStackParamList } from '@types';
 import { Feed } from '@screens';
-import { SignInStack } from '@navigation';
+import { SignInStack } from '../SignIn';
+import { HomeStack } from '../Home';
+import { Routes } from '@config';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -14,20 +16,20 @@ interface Props {
 export function RootStack({ signedIn = false }: Props) {
   return (
     <Stack.Navigator
-      initialRouteName={signedIn ? 'Feed' : 'SignInStack'}
+      initialRouteName={signedIn ? Routes.HOME_STACK : Routes.SIGN_IN_STACK}
       screenOptions={{ headerShown: false }}
     >
       {signedIn ? (
         <>
           <Stack.Screen
-            name="Feed"
-            component={Feed}
+            name={Routes.HOME_STACK}
+            component={HomeStack}
             options={{ headerTitle: 'Feed' }}
           />
         </>
       ) : (
         <>
-          <Stack.Screen name="SignInStack" component={SignInStack} />
+          <Stack.Screen name={Routes.SIGN_IN_STACK} component={SignInStack} />
         </>
       )}
     </Stack.Navigator>

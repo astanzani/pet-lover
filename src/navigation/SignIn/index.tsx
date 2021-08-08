@@ -1,20 +1,22 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { SignIn, SignUp } from '../../screens';
+import { SignIn, SignUp } from '@screens';
+import { SignInStackParamList } from '@types';
+import { Routes } from '@config';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<SignInStackParamList>();
 
 export function SignInStack() {
   return (
     <Stack.Navigator screenOptions={{ contentStyle: { paddingTop: 0 } }}>
       <Stack.Screen
-        name="signin"
+        name={Routes.SIGN_IN}
         component={SignIn}
         options={{ headerTitle: 'Sign In' }}
       />
       <Stack.Screen
-        name="signup"
+        name={Routes.SIGN_UP}
         component={SignUp}
         options={{ headerTitle: 'Sign Up' }}
       />

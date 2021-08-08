@@ -2134,6 +2134,18 @@
   resolved "https://registry.yarnpkg.com/@react-navigation/elements/-/elements-1.0.1.tgz#effcdb59aa5cf64445ff2ca7f50ee35df484fa72"
   integrity sha512-KU6DPqmFmD4E+AwXOBzrqVBYG1Gd8HzPfbCk1PGzUjIiQOg6xv1pyfJ/d2x6aEOzxX5jtuNVCx6S553ZLkJP9Q==
 
+"@react-navigation/elements@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@react-navigation/elements/-/elements-1.0.2.tgz#ddc99a2c6b52c72bb4686c0037e17623c48ca7d0"
+  integrity sha512-V4rSDYgK1m14CpHlqpTi83auub1mVaItOb8kr+7rzhC7BUYO5wbMh/T88qZOrxMNMeZfveb6MI3zTw+u31eAUw==
+
+"@react-navigation/material-bottom-tabs@^6.0.2":
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/@react-navigation/material-bottom-tabs/-/material-bottom-tabs-6.0.2.tgz#a6a2cdb063df8f9f7b7bc9ad026eb20fe86330a9"
+  integrity sha512-3q1ZhJOV+VH58xPlmKpiLDrRAXS4YthyhpzmbEdKl0EBeV2Zzv1uJnqMVd6gkjFYWWb0uEum2T3zYdXlOozJWw==
+  dependencies:
+    "@react-navigation/elements" "^1.0.2"
+
 "@react-navigation/native-stack@^6.0.2":
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/@react-navigation/native-stack/-/native-stack-6.0.2.tgz#15a3520838efeb8fa30a9dbe3ab6b7e90871f6e0"

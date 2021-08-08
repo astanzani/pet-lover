@@ -9,4 +9,7 @@ export default (theme: ReactNativePaper.Theme) =>
     input: {
       marginBottom: theme.spacing(1),
     },
+    signInButton: {
+      marginTop: theme.spacing(1),
+    },
   });

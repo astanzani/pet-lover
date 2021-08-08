@@ -10,6 +10,7 @@
   "dependencies": {
     "@aws-amplify/auth": "^4.2.0",
     "@react-native-async-storage/async-storage": "^1.15.5",
+    "@react-navigation/material-bottom-tabs": "^6.0.2",
     "@react-navigation/native": "^6.0.1",
     "@react-navigation/native-stack": "^6.0.2",
     "expo": "~42.0.1",
