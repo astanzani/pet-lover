@@ -1,10 +1,8 @@
 import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import { View, Text } from 'react-native';
-import { useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Feed } from '@screens';
+import { Feed, More } from '@screens';
 import { Routes } from '@config';
 import { Button } from '@components';
 
@@ -40,9 +38,8 @@ export function HomeStack() {
         options={{ tabBarIcon: 'bell' }}
       />
       <Tab.Screen
-        name="Settings3"
-        key="d"
-        component={AnotherTabScreen}
+        name={Routes.MORE}
+        component={More}
         options={{ tabBarIcon: 'menu' }}
       />
     </Tab.Navigator>
