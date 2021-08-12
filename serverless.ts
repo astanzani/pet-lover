@@ -12,6 +12,102 @@ const config: Serverless = {
       COGNITO_PET_LOVER_USER_POOL_ID: {
         Ref: 'PetLoverUserPool',
       },
+      DYNAMODB_USERS_TABLE: '${self:service}-users-${sls:stage}',
+      DYNAMODB_PETS_TABLE: '${self:service}-pets-${sls:stage}',
+      DYNAMODB_POSTS_TABLE: '${self:service}-posts-${sls:stage}',
+      DYNAMODB_COMMENTS_TABLE: '${self:service}-comments-${sls:stage}',
+      DYNAMODB_FRIENDSHIPS_TABLE: '${self:service}-friendships-${sls:stage}',
+      DYNAMODB_FEEDS_TABLE: '${self:service}-feeds-${sls:stage}',
+    },
+    iam: {
+      role: {
+        statements: [
+          {
+            Effect: 'Allow',
+            Action: [
+              'dynamodb:Query',
+              'dynamodb:Scan',
+              'dynamodb:GetItem',
+              'dynamodb:PutItem',
+              'dynamodb:UpdateItem',
+              'dynamodb:DeleteItem',
+            ],
+            Resource: {
+              'Fn::GetAtt': ['UsersDynamoDBTable', 'Arn'],
+            },
+          },
+          {
+            Effect: 'Allow',
+            Action: [
+              'dynamodb:Query',
+              'dynamodb:Scan',
+              'dynamodb:GetItem',
+              'dynamodb:PutItem',
+              'dynamodb:UpdateItem',
+              'dynamodb:DeleteItem',
+            ],
+            Resource: {
+              'Fn::GetAtt': ['PetsDynamoDBTable', 'Arn'],
+            },
+          },
+          {
+            Effect: 'Allow',
+            Action: [
+              'dynamodb:Query',
+              'dynamodb:Scan',
+              'dynamodb:GetItem',
+              'dynamodb:PutItem',
+              'dynamodb:UpdateItem',
+              'dynamodb:DeleteItem',
+            ],
+            Resource: {
+              'Fn::GetAtt': ['PostsDynamoDBTable', 'Arn'],
+            },
+          },
+          {
+            Effect: 'Allow',
+            Action: [
+              'dynamodb:Query',
+              'dynamodb:Scan',
+              'dynamodb:GetItem',
+              'dynamodb:PutItem',
+              'dynamodb:UpdateItem',
+              'dynamodb:DeleteItem',
+            ],
+            Resource: {
+              'Fn::GetAtt': ['CommentsDynamoDBTable', 'Arn'],
+            },
+          },
+          {
+            Effect: 'Allow',
+            Action: [
+              'dynamodb:Query',
+              'dynamodb:Scan',
+              'dynamodb:GetItem',
+              'dynamodb:PutItem',
+              'dynamodb:UpdateItem',
+              'dynamodb:DeleteItem',
+            ],
+            Resource: {
+              'Fn::GetAtt': ['FeedsDynamoDBTable', 'Arn'],
+            },
+          },
+          {
+            Effect: 'Allow',
+            Action: [
+              'dynamodb:Query',
+              'dynamodb:Scan',
+              'dynamodb:GetItem',
+              'dynamodb:PutItem',
+              'dynamodb:UpdateItem',
+              'dynamodb:DeleteItem',
+            ],
+            Resource: {
+              'Fn::GetAtt': ['FriendshipsDynamoDBTable', 'Arn'],
+            },
+          },
+        ],
+      },
     },
   },
   functions: {
@@ -185,7 +281,7 @@ const config: Serverless = {
       UsersDynamoDBTable: {
         Type: 'AWS::DynamoDB::Table',
         Properties: {
-          TableName: '${self:service}-users-${sls:stage}',
+          TableName: '${self:provider.environment.DYNAMODB_USERS_TABLE}',
           AttributeDefinitions: [
             {
               AttributeName: 'userId',
@@ -204,7 +300,7 @@ const config: Serverless = {
       PetsDynamoDBTable: {
         Type: 'AWS::DynamoDB::Table',
         Properties: {
-          TableName: '${self:service}-pets-${sls:stage}',
+          TableName: '${self:provider.environment.DYNAMODB_PETS_TABLE}',
           AttributeDefinitions: [
             {
               AttributeName: 'userId',
@@ -231,7 +327,7 @@ const config: Serverless = {
       PostsDynamoDBTable: {
         Type: 'AWS::DynamoDB::Table',
         Properties: {
-          TableName: '${self:service}-posts-${sls:stage}',
+          TableName: '${self:provider.environment.DYNAMODB_POSTS_TABLE}',
           AttributeDefinitions: [
             {
               AttributeName: 'petId',
@@ -272,7 +368,7 @@ const config: Serverless = {
       CommentsDynamoDBTable: {
         Type: 'AWS::DynamoDB::Table',
         Properties: {
-          TableName: '${self:service}-comments-${sls:stage}',
+          TableName: '${self:provider.environment.DYNAMODB_COMMENTS_TABLE}',
           AttributeDefinitions: [
             {
               AttributeName: 'postId',
@@ -300,7 +396,7 @@ const config: Serverless = {
         Type: 'AWS::DynamoDB::Table',
         DependsOn: 'PostsDynamoDBTable',
         Properties: {
-          TableName: '${self:service}-friendships-${sls:stage}',
+          TableName: '${self:provider.environment.DYNAMODB_FRIENDSHIPS_TABLE}',
           AttributeDefinitions: [
             {
               AttributeName: 'petId',
@@ -345,7 +441,7 @@ const config: Serverless = {
       FeedsDynamoDBTable: {
         Type: 'AWS::DynamoDB::Table',
         Properties: {
-          TableName: '${self:service}-feeds-${sls:stage}',
+          TableName: '${self:provider.environment.DYNAMODB_FEEDS_TABLE}',
           AttributeDefinitions: [
             {
               AttributeName: 'userId',
@@ -371,10 +467,17 @@ const config: Serverless = {
       },
     },
   },
-  plugins: ['serverless-webpack', 'serverless-offline'],
+  plugins: [
+    'serverless-webpack',
+    'serverless-offline',
+    'serverless-dynamodb-local',
+  ],
   custom: {
     webpack: {
       includeModules: true,
+    },
+    dynamodb: {
+      stages: ['dev'],
     },
   },
 };
