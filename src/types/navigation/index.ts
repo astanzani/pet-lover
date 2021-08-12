@@ -8,4 +8,8 @@ export type RootStackParamList = {
 export type SignInStackParamList = {
   [Routes.SIGN_IN]: undefined;
   [Routes.SIGN_UP]: undefined;
+  [Routes.CONFIRM_SIGN_UP]: {
+    email: string;
+    password: string;
+  };
 };

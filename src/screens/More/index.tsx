@@ -5,9 +5,13 @@ import { Auth } from '@aws-amplify/auth';
 import { Button } from '@components';
 
 export function More() {
+  const signOut = async () => {
+    await Auth.signOut();
+  };
+
   return (
     <SafeAreaView>
-      <Button onPress={Auth.signOut}>Sign Out</Button>
+      <Button onPress={signOut}>Sign Out</Button>
     </SafeAreaView>
   );
 }

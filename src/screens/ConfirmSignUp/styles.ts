@@ -7,12 +7,17 @@ export default (theme: ReactNativePaper.Theme) =>
       padding: theme.spacing(2),
     },
     title: {
+      alignSelf: 'center',
+    },
+    description: {
+      alignSelf: 'center',
       textAlign: 'center',
     },
-    input: {
-      marginBottom: theme.spacing(1),
+    confirmationWrapper: {
+      flex: 1,
     },
-    signUpButton: {
-      marginTop: theme.spacing(1),
+    confirmationCodeInput: {
+      marginTop: theme.spacing(4),
+      marginBottom: theme.spacing(4),
     },
   });

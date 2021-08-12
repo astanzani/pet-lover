@@ -18,6 +18,8 @@ declare global {
   namespace ReactNativePaper {
     interface ThemeColors {
       heart: string;
+      white: string;
+      black: string;
     }
     interface Theme {
       spacing: Spacing;
@@ -30,6 +32,8 @@ const baseTheme: ReactNativePaper.Theme = {
   colors: {
     ...DefaultTheme.colors,
     heart: '#F36B7E',
+    white: '#FFF',
+    black: '#000',
   },
   spacing: (s: number) => SPACING_MAP[s.toString()],
 };
