@@ -2,7 +2,7 @@ import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Feed, More } from '@screens';
+import { Feed, More, NewPost } from '@screens';
 import { Routes } from '@config';
 import { Button } from '@components';
 
@@ -26,6 +26,11 @@ export function HomeStack() {
         name={Routes.FEED}
         component={Feed}
         options={{ tabBarIcon: 'home' }}
+      />
+      <Tab.Screen
+        name={Routes.NEW_POST}
+        component={NewPost}
+        options={{ tabBarIcon: 'image-plus', title: 'New Post' }}
       />
       <Tab.Screen
         name="Settings"

@@ -6,5 +6,6 @@ export enum Routes {
 
   HOME_STACK = 'HomeStack',
   FEED = 'Feed',
+  NEW_POST = 'NewPost',
   MORE = 'More',
 }
