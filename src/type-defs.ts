@@ -17,7 +17,7 @@ export const typeDefs = gql`
   }
 
   type Query {
-    me: String!
+    me: User!
     testMessage: String!
   }
 `;
