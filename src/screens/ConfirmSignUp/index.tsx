@@ -8,13 +8,15 @@ import {
   TextInput,
   HelperText,
 } from 'react-native-paper';
-import { Auth } from '@aws-amplify/auth';
+import { Auth, CognitoUser } from '@aws-amplify/auth';
 import { RouteProp } from '@react-navigation/native';
 
 import { Button } from '@components';
-import { SignInStackParamList } from '@types';
-import getStyles from './styles';
+import { AddUserInput, SignInStackParamList, User } from '@types';
 import { Routes } from '@config';
+import getStyles from './styles';
+import { useMutation } from '@apollo/client';
+import { SAVE_USER } from '@graphql/mutations';
 
 interface Props {
   navigation: NavigationProp<SignInStackParamList>;
@@ -26,6 +28,8 @@ export function ConfirmSignUp({ navigation, route }: Props) {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [saveUser] =
+    useMutation<{ saveUser: User; props: AddUserInput }>(SAVE_USER);
 
   useEffect(() => {
     navigation.addListener('beforeRemove', (e) => {
@@ -43,7 +47,11 @@ export function ConfirmSignUp({ navigation, route }: Props) {
     try {
       setLoading(true);
       await Auth.confirmSignUp(email, code);
-      await Auth.signIn(email, password);
+      const user = await Auth.signIn(email, password);
+      const { name } = user.attributes;
+      await saveUser({
+        variables: { props: { email, name } },
+      });
     } catch (e) {
       setError(e.message);
       setLoading(false);

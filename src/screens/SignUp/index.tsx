@@ -33,7 +33,6 @@ export function SignUp({ navigation }: Props) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
   const styles = getStyles(theme);
 
   const toggleShowPassword = () => {
@@ -49,6 +48,7 @@ export function SignUp({ navigation }: Props) {
         attributes: {
           email: values.email,
           phone_number: values.phone,
+          name: values.name,
         },
       });
       setLoading(false);

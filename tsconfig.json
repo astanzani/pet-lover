@@ -8,7 +8,9 @@
       "@components": ["./src/components"],
       "@hooks": ["./src/hooks"],
       "@config": ["./src/config"],
-      "@types": ["./src/types"]
+      "@types": ["./src/types"],
+      "@graphql/mutations": ["./src/graphql/mutations"],
+      "@graphql/queries": ["./src/graphql/queries"]
     }
   }
 }

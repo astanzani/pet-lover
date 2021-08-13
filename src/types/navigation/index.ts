@@ -13,3 +13,8 @@ export type SignInStackParamList = {
     password: string;
   };
 };
+
+export type PetsStackParamList = {
+  [Routes.PETS]: undefined;
+  [Routes.NEW_PET]: undefined;
+};

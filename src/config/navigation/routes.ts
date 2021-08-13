@@ -8,4 +8,8 @@ export enum Routes {
   FEED = 'Feed',
   NEW_POST = 'NewPost',
   MORE = 'More',
+
+  PETS_STACK = 'PetsStack',
+  PETS = 'Pets',
+  NEW_PET = 'NewPet',
 }

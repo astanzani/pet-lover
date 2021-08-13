@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { View, Image, useWindowDimensions, StatusBar } from 'react-native';
+import {
+  View,
+  Image,
+  useWindowDimensions,
+  StatusBar,
+  ScrollView,
+} from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import { HelperText, Paragraph, TextInput, useTheme } from 'react-native-paper';
 import { Auth } from '@aws-amplify/auth';
@@ -52,7 +58,7 @@ export function SignIn({ navigation }: Props) {
         style={{ width, maxHeight: 100, marginBottom: theme.spacing(3) }}
         resizeMode="contain"
       />
-      <View style={styles.contentWrapper}>
+      <ScrollView style={styles.contentWrapper}>
         <View style={styles.formWrapper}>
           <TextInput
             style={styles.input}
@@ -93,7 +99,7 @@ export function SignIn({ navigation }: Props) {
             Sign Up
           </Button>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }

@@ -14,6 +14,7 @@ export default (theme: ReactNativePaper.Theme) =>
       flex: 1,
     },
     signUpWrapper: {
+      flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',

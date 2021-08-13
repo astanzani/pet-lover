@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feed, More, NewPost } from '@screens';
 import { Routes } from '@config';
 import { Button } from '@components';
+import { PetsStack } from '../Pets';
 
 function AnotherTabScreen() {
   return (
@@ -38,9 +39,9 @@ export function HomeStack() {
         options={{ tabBarIcon: 'account-group' }}
       />
       <Tab.Screen
-        name="Settings2"
-        component={AnotherTabScreen}
-        options={{ tabBarIcon: 'bell' }}
+        name={Routes.PETS_STACK}
+        component={PetsStack}
+        options={{ tabBarIcon: 'paw', title: 'My Pets' }}
       />
       <Tab.Screen
         name={Routes.MORE}
