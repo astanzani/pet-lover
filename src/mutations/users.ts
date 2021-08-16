@@ -1,5 +1,10 @@
-import { createUser } from '../services/users';
+import { createUser, uploadProfilePicture } from '../services/users';
 import { AddUserInput } from '../types';
+
+interface ApolloContext {
+  userId: string;
+  baseUrl: string;
+}
 
 export const usersMutations = {
   addUser(
@@ -8,5 +13,12 @@ export const usersMutations = {
     { userId }: { userId: string }
   ) {
     return createUser(props, userId);
+  },
+  uploadPicture(
+    _parent: any,
+    { picture }: { picture: any },
+    { userId, baseUrl }: ApolloContext
+  ) {
+    return uploadProfilePicture(userId, baseUrl, picture);
   },
 };

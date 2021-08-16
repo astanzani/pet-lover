@@ -5,6 +5,15 @@ const config: Serverless = {
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
+    apiGateway: {
+      minimumCompressionSize: 1024,
+      shouldStartNameWithService: true,
+      binaryMediaTypes: [
+        'application/octet-stream',
+        'image/jpeg',
+        'multipart/form-data',
+      ],
+    },
     region: 'us-east-1',
     lambdaHashingVersion: 20201221,
     environment: {
@@ -18,6 +27,7 @@ const config: Serverless = {
       DYNAMODB_COMMENTS_TABLE: '${self:service}-comments-${sls:stage}',
       DYNAMODB_FRIENDSHIPS_TABLE: '${self:service}-friendships-${sls:stage}',
       DYNAMODB_FEEDS_TABLE: '${self:service}-feeds-${sls:stage}',
+      PROFILE_PICTURES_BUCKET: '${self:service}-profile-pictures-${sls:stage}',
     },
     iam: {
       role: {
@@ -105,6 +115,31 @@ const config: Serverless = {
             Resource: {
               'Fn::GetAtt': ['FriendshipsDynamoDBTable', 'Arn'],
             },
+          },
+          {
+            Effect: 'Allow',
+            Action: [
+              's3:DeleteObject',
+              's3:GetObject',
+              's3:PutObject',
+              's3:ListBucket',
+            ],
+            Resource: [
+              {
+                'Fn::GetAtt': ['ProfilePicturesBucket', 'Arn'],
+              },
+              {
+                'Fn::Join': [
+                  '',
+                  [
+                    {
+                      'Fn::GetAtt': ['ProfilePicturesBucket', 'Arn'],
+                    },
+                    '/*',
+                  ],
+                ],
+              },
+            ],
           },
         ],
       },
@@ -463,6 +498,13 @@ const config: Serverless = {
             },
           ],
           BillingMode: 'PAY_PER_REQUEST',
+        },
+      },
+      ProfilePicturesBucket: {
+        Type: 'AWS::S3::Bucket',
+        Properties: {
+          AccessControl: 'PublicRead',
+          BucketName: '${self:provider.environment.PROFILE_PICTURES_BUCKET}',
         },
       },
     },

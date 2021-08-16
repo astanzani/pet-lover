@@ -1,6 +1,8 @@
 import { gql } from 'apollo-server-core';
 
 export const typeDefs = gql`
+  scalar Upload
+
   input AddUserInput {
     email: String!
     name: String!
@@ -14,6 +16,7 @@ export const typeDefs = gql`
 
   type Mutation {
     addUser(props: AddUserInput!): User!
+    uploadPicture(picture: Upload!): String!
   }
 
   type Query {
