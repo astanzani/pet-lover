@@ -16,7 +16,7 @@ export const typeDefs = gql`
 
   type Mutation {
     addUser(props: AddUserInput!): User!
-    uploadPicture(picture: Upload!): String!
+    uploadUserProfilePicture(picture: Upload!): String!
   }
 
   type Query {

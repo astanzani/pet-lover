@@ -507,6 +507,26 @@ const config: Serverless = {
           BucketName: '${self:provider.environment.PROFILE_PICTURES_BUCKET}',
         },
       },
+      BucketPublicReadPolicy: {
+        Type: 'AWS::S3::BucketPolicy',
+        Properties: {
+          Bucket: {
+            Ref: 'ProfilePicturesBucket',
+          },
+          PolicyDocument: {
+            Version: '2012-10-17',
+            Statement: [
+              {
+                Effect: 'Allow',
+                Action: 's3:GetObject',
+                Resource:
+                  'arn:aws:s3:::${self:provider.environment.PROFILE_PICTURES_BUCKET}/*',
+                Principal: '*',
+              },
+            ],
+          },
+        },
+      },
     },
   },
   plugins: [

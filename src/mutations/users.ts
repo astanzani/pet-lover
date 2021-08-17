@@ -1,10 +1,7 @@
-import { createUser, uploadProfilePicture } from '../services/users';
-import { AddUserInput } from '../types';
+import { FileUpload } from 'graphql-upload';
 
-interface ApolloContext {
-  userId: string;
-  baseUrl: string;
-}
+import { createUser, uploadProfilePicture } from '../services/users';
+import { AddUserInput, ApolloContext } from '../types';
 
 export const usersMutations = {
   addUser(
@@ -14,11 +11,11 @@ export const usersMutations = {
   ) {
     return createUser(props, userId);
   },
-  uploadPicture(
+  uploadUserProfilePicture(
     _parent: any,
-    { picture }: { picture: any },
-    { userId, baseUrl }: ApolloContext
+    { picture }: { picture: Promise<FileUpload> },
+    { userId }: ApolloContext
   ) {
-    return uploadProfilePicture(userId, baseUrl, picture);
+    return uploadProfilePicture(userId, picture);
   },
 };

@@ -1,6 +1,5 @@
 import { ApolloServer } from 'apollo-server-lambda';
 import express from 'express';
-import cors from 'cors';
 import { graphqlUploadExpress } from 'graphql-upload';
 
 import { resolvers } from './resolvers';
@@ -12,8 +11,7 @@ const apolloServer = new ApolloServer({
   context({ event }) {
     const userId =
       event?.requestContext?.authorizer?.claims?.['cognito:username'];
-    const baseUrl = `https://${event.headers.Host}/${event.requestContext.stage}`;
-    return { userId, baseUrl };
+    return { userId };
   },
 });
 
@@ -21,7 +19,6 @@ export const graphqlHandler = apolloServer.createHandler({
   expressAppFromMiddleware(middleware) {
     const app = express();
     app.use(graphqlUploadExpress());
-    app.use(cors());
     app.use(middleware);
     return app;
   },
