@@ -24,7 +24,9 @@ module.exports = {
     extensions: ['.ts', '.js'],
     alias: {
       '@db/users': path.resolve(__dirname, './src/db/users'),
+      '@db/pets': path.resolve(__dirname, './src/db/pets'),
       '@services/users': path.resolve(__dirname, './src/services/users'),
+      '@services/pets': path.resolve(__dirname, './src/services/pets'),
       '@types': path.resolve(__dirname, './src/types'),
     },
   },
