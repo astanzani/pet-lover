@@ -1,7 +1,7 @@
 import { FileUpload } from 'graphql-upload';
 
-import { createUser, uploadProfilePicture } from '../services/users';
-import { AddUserInput, ApolloContext } from '../types';
+import { createUser, uploadProfilePicture } from '@services/users';
+import { AddUserInput, ApolloContext } from '@types';
 
 export const usersMutations = {
   addUser(

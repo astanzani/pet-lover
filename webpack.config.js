@@ -1,3 +1,4 @@
+const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const serverlessWebpack = require('serverless-webpack');
 
@@ -21,6 +22,11 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+    alias: {
+      '@db/users': path.resolve(__dirname, './src/db/users'),
+      '@services/users': path.resolve(__dirname, './src/services/users'),
+      '@types': path.resolve(__dirname, './src/types'),
+    },
   },
   target: 'node',
 };

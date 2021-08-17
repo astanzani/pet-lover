@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk';
-import { User } from '../types';
+import { User } from '@types';
 
 const KEY_PREFIX = 'USER#';
 

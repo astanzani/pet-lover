@@ -1,8 +1,8 @@
 import { S3 } from 'aws-sdk';
 import { FileUpload } from 'graphql-upload';
 
-import { addUser, getUser } from '../db/users';
-import { AddUserInput, User } from '../types';
+import { addUser, getUser } from '@db/users';
+import { AddUserInput, User } from '@types';
 
 const USER_ID_PREFIX = 'USER#';
 

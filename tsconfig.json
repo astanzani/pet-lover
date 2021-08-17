@@ -4,7 +4,12 @@
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": {
+      "@db/*": ["./src/db/*"],
+      "@services/*": ["./src/services/*"],
+      "@types": ["./src/types"]
+    }
   },
   "exclude": ["node_modules", "src/**/*.test.ts"],
   "include": ["src/**/*.ts"]
