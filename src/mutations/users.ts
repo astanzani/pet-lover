@@ -1,6 +1,6 @@
 import { FileUpload } from 'graphql-upload';
 
-import { createUser, uploadProfilePicture } from '@services/users';
+import { addUser, uploadProfilePicture } from '@services/users';
 import { AddUserInput, ApolloContext } from '@types';
 
 export const usersMutations = {
@@ -9,7 +9,7 @@ export const usersMutations = {
     { props }: { props: AddUserInput },
     { userId }: { userId: string }
   ) {
-    return createUser(props, userId);
+    return addUser(props, userId);
   },
   uploadUserProfilePicture(
     _parent: any,

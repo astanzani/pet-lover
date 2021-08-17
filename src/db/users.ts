@@ -1,9 +1,10 @@
 import { DynamoDB } from 'aws-sdk';
+
 import { User } from '@types';
 
 const KEY_PREFIX = 'USER#';
 
-export async function getUser(id: string): Promise<User | null> {
+export async function readOne(id: string): Promise<User | null> {
   const params = {
     TableName: process.env.DYNAMODB_USERS_TABLE,
     Key: { userId: KEY_PREFIX + id },
@@ -15,7 +16,7 @@ export async function getUser(id: string): Promise<User | null> {
   return (result.Item as User) ?? null;
 }
 
-export async function addUser(input: User): Promise<User> {
+export async function createOne(input: User): Promise<User> {
   const params = {
     TableName: process.env.DYNAMODB_USERS_TABLE,
     Item: input,

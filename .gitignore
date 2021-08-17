@@ -3,3 +3,4 @@
 .serverless
 .dynamodb
 .webpack
+.vscode

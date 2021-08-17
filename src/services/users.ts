@@ -1,13 +1,13 @@
 import { S3 } from 'aws-sdk';
 import { FileUpload } from 'graphql-upload';
 
-import { addUser, getUser } from '@db/users';
+import { createOne, readOne } from '@db/users';
 import { AddUserInput, User } from '@types';
 
 const USER_ID_PREFIX = 'USER#';
 
 export async function getUserProfile(id: string): Promise<User> {
-  const user = await getUser(id);
+  const user = await readOne(id);
 
   if (user == null) {
     throw new Error(`Could not find user with id: ${id}`);
@@ -16,20 +16,13 @@ export async function getUserProfile(id: string): Promise<User> {
   return user;
 }
 
-export async function createUser(
-  input: AddUserInput,
-  id: string
-): Promise<User> {
+export async function addUser(input: AddUserInput, id: string): Promise<User> {
   const user: User = {
     ...input,
     userId: USER_ID_PREFIX + id,
   };
 
-  const addedUser = await addUser(user);
-
-  if (addedUser == null) {
-    throw new Error(`Failed to add user: ${JSON.stringify(user)}`);
-  }
+  const addedUser = await createOne(user);
 
   return addedUser;
 }

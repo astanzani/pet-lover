@@ -1,4 +1,4 @@
-import { createPet } from '@services/pets';
+import { addPet } from '@services/pets';
 import { AddPetInput, ApolloContext } from '@types';
 
 export const petsMutations = {
@@ -7,6 +7,6 @@ export const petsMutations = {
     { props }: { props: AddPetInput },
     { userId }: ApolloContext
   ) {
-    return createPet(props, userId);
+    return addPet(props, userId);
   },
 };
