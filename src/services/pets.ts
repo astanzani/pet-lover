@@ -1,7 +1,9 @@
 import { v4 } from 'uuid';
+import { FileUpload } from 'graphql-upload';
 
 import { AddPetInput, Pet } from '@types';
-import { createOne } from '@db/pets';
+import { createOne, readAll, updateOne } from '@db/pets';
+import { uploadFile } from '@s3';
 
 const PET_ID_PREFIX = 'PET#';
 const USER_ID_PREFIX = 'USER#';
@@ -20,4 +22,38 @@ export async function addPet(input: AddPetInput, userId: string): Promise<Pet> {
   }
 
   return addedPet;
+}
+
+export async function getPets(userId: string): Promise<Pet[]> {
+  const id = USER_ID_PREFIX + userId;
+  const pets = await readAll(id);
+
+  if (pets == null) {
+    throw new Error(`Failed to get pets for user with id: ${userId}`);
+  }
+
+  return pets;
+}
+
+export async function uploadProfilePicture(
+  petId: string,
+  userId: string,
+  picture: Promise<FileUpload>
+) {
+  const fileName = `pets/${petId}.jpg`;
+
+  const { createReadStream } = await picture;
+
+  // Upload file to S3
+  const url = await uploadFile(
+    process.env.PROFILE_PICTURES_BUCKET,
+    fileName,
+    createReadStream(),
+    'image/jpeg'
+  );
+
+  // Update pet on DB with the url
+  await updateOne(petId, USER_ID_PREFIX + userId, { picture: url });
+
+  return url;
 }

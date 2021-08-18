@@ -28,6 +28,7 @@ module.exports = {
       '@services/users': path.resolve(__dirname, './src/services/users'),
       '@services/pets': path.resolve(__dirname, './src/services/pets'),
       '@types': path.resolve(__dirname, './src/types'),
+      '@s3': path.resolve(__dirname, './src/s3'),
     },
   },
   target: 'node',

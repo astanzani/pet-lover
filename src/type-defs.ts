@@ -31,10 +31,12 @@ export const typeDefs = gql`
     uploadUserProfilePicture(picture: Upload!): String!
 
     addPet(props: AddPetInput!): Pet!
+    uploadPetProfilePicture(petId: String!, picture: Upload!): String!
   }
 
   type Query {
     me: User!
+    pets: [Pet!]!
     testMessage: String!
   }
 `;

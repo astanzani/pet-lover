@@ -1,6 +1,7 @@
 import { S3 } from 'aws-sdk';
 import { FileUpload } from 'graphql-upload';
 
+import { uploadFile } from '@s3';
 import { createOne, readOne } from '@db/users';
 import { AddUserInput, User } from '@types';
 
@@ -36,18 +37,10 @@ export async function uploadProfilePicture(
 
   const { createReadStream } = await picture;
 
-  return new Promise((resolve, reject) => {
-    const stream = createReadStream();
-
-    const s3 = new S3();
-    s3.upload({
-      Bucket: process.env.PROFILE_PICTURES_BUCKET,
-      Key: fileName,
-      Body: stream,
-      ContentType: 'image/jpeg',
-    })
-      .promise()
-      .then((data) => resolve(data.Location))
-      .catch((err) => reject(err));
-  });
+  return uploadFile(
+    process.env.PROFILE_PICTURES_BUCKET,
+    fileName,
+    createReadStream(),
+    'image/jpeg'
+  );
 }
