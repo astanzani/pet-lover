@@ -9,27 +9,48 @@ import {
   Portal,
 } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
+import { useMutation } from '@apollo/client';
+import { ReactNativeFile } from 'apollo-upload-client';
+import { NavigationProp } from '@react-navigation/native';
 
 import { Button } from '@components';
+import { UPLOAD_PET_PICTURE, SAVE_PET } from '@graphql/mutations';
+import { GET_PETS } from '@graphql/queries';
+import { PetsStackParamList } from '@types';
 import getStyles from './styles';
 
-export function NewPet() {
+interface Props {
+  navigation: NavigationProp<PetsStackParamList>;
+}
+
+export function NewPet({ navigation }: Props) {
   const [dialogVisible, setDialogVisible] = useState(false);
+  const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState<string | undefined>(undefined);
+  const [savePet] = useMutation(SAVE_PET);
+  const [uploadPicture] =
+    useMutation<{ addPicture: string; file: Blob }>(UPLOAD_PET_PICTURE);
   const theme = useTheme();
   const styles = getStyles(theme);
 
   const showDialog = () => setDialogVisible(true);
   const hideDialog = () => setDialogVisible(false);
 
+  const handlePickedImage = (result: ImagePicker.ImagePickerResult) => {
+    if (result.cancelled) {
+      return;
+    }
+
+    setImageUri(result.uri);
+    hideDialog();
+  };
+
   const selectPicture = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
     });
-    if (!result.cancelled) {
-      setImageUri(result.uri);
-      hideDialog();
-    }
+    handlePickedImage(result);
   };
 
   const takePicture = async () => {
@@ -38,9 +59,38 @@ export function NewPet() {
       aspect: [4, 3],
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
     });
-    if (!result.cancelled) {
-      setImageUri(result.uri);
-      hideDialog();
+    handlePickedImage(result);
+  };
+
+  const submit = async () => {
+    setLoading(true);
+
+    try {
+      const res = await savePet({
+        variables: { props: { name } },
+        refetchQueries: imageUri ? [] : [GET_PETS],
+      });
+      const id = res.data.addPet.petId;
+
+      if (imageUri) {
+        await uploadPicture({
+          variables: {
+            petId: id,
+            picture: new ReactNativeFile({
+              uri: imageUri,
+              name: '',
+              type: 'image/jpeg',
+            }),
+          },
+          refetchQueries: [GET_PETS],
+        });
+      }
+
+      setLoading(false);
+      navigation.goBack();
+    } catch (e) {
+      console.error(e);
+      setLoading(false);
     }
   };
 
@@ -61,8 +111,17 @@ export function NewPet() {
         mode="outlined"
         label="Name"
         placeholder="Simba"
+        onChangeText={(text) => setName(text)}
+        value={name}
       />
-      <Button mode="contained">Add</Button>
+      <Button
+        mode="contained"
+        onPress={submit}
+        disabled={!name}
+        loading={loading}
+      >
+        Add
+      </Button>
       <Portal>
         <Dialog visible={dialogVisible} onDismiss={hideDialog}>
           <Dialog.Title>Add a profile picture</Dialog.Title>

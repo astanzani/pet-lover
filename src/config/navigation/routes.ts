@@ -6,10 +6,12 @@ export enum Routes {
 
   HOME_STACK = 'HomeStack',
   FEED = 'Feed',
-  NEW_POST = 'NewPost',
   MORE = 'More',
 
   PETS_STACK = 'PetsStack',
   PETS = 'Pets',
   NEW_PET = 'NewPet',
+
+  NEW_POST_STACK = 'NewPostStack',
+  NEW_POST = 'NewPost',
 }

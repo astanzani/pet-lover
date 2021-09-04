@@ -2,13 +2,13 @@ import React from 'react';
 import { useTheme } from 'react-native-paper';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { Pets, NewPet } from '@screens';
+import { NewPost } from '@screens';
 import { Routes } from '@config';
-import { PetsStackParamList } from '@types';
+import { PostsStackParamList } from '@types';
 
-const Stack = createNativeStackNavigator<PetsStackParamList>();
+const Stack = createNativeStackNavigator<PostsStackParamList>();
 
-export function PetsStack() {
+export function NewPostStack() {
   const theme = useTheme();
 
   return (
@@ -19,14 +19,9 @@ export function PetsStack() {
       }}
     >
       <Stack.Screen
-        name={Routes.PETS}
-        component={Pets}
-        options={{ title: 'My Pets' }}
-      />
-      <Stack.Screen
-        name={Routes.NEW_PET}
-        component={NewPet}
-        options={{ title: 'Add a new pet' }}
+        name={Routes.NEW_POST}
+        component={NewPost}
+        options={{ title: 'Create new post' }}
       />
     </Stack.Navigator>
   );

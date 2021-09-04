@@ -16,6 +16,7 @@ export function UserCard() {
   }
 
   if (error || !data) {
+    console.error(error);
     throw new Error('Could not fetch user info!');
   }
 

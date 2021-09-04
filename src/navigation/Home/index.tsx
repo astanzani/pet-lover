@@ -2,10 +2,11 @@ import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Feed, More, NewPost } from '@screens';
+import { Feed, More } from '@screens';
 import { Routes } from '@config';
 import { Button } from '@components';
 import { PetsStack } from '../Pets';
+import { NewPostStack } from '../NewPost';
 
 function AnotherTabScreen() {
   return (
@@ -29,8 +30,8 @@ export function HomeStack() {
         options={{ tabBarIcon: 'home' }}
       />
       <Tab.Screen
-        name={Routes.NEW_POST}
-        component={NewPost}
+        name={Routes.NEW_POST_STACK}
+        component={NewPostStack}
         options={{ tabBarIcon: 'image-plus', title: 'New Post' }}
       />
       <Tab.Screen

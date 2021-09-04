@@ -18,3 +18,7 @@ export type PetsStackParamList = {
   [Routes.PETS]: undefined;
   [Routes.NEW_PET]: undefined;
 };
+
+export type PostsStackParamList = {
+  [Routes.NEW_POST]: undefined;
+};

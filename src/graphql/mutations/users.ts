@@ -9,3 +9,9 @@ export const SAVE_USER = gql`
     }
   }
 `;
+
+export const UPLOAD_PICTURE = gql`
+  mutation ($picture: Upload!) {
+    uploadUserProfilePicture(picture: $picture)
+  }
+`;

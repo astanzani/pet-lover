@@ -1,9 +1,11 @@
 import React from 'react';
 import { NavigationProp } from '@react-navigation/native';
-import { View, Text } from 'react-native';
-import { Title, Subheading, useTheme, FAB } from 'react-native-paper';
+import { View, ScrollView } from 'react-native';
+import { Title, Subheading, useTheme, FAB, Avatar } from 'react-native-paper';
+import { useQuery } from '@apollo/client';
 
-import { PetsStackParamList } from '@types';
+import { GET_PETS } from '@graphql/queries';
+import { Pet, PetsStackParamList } from '@types';
 import { Routes } from '@config';
 import getStyles from './styles';
 
@@ -12,6 +14,7 @@ interface Props {
 }
 
 export function Pets({ navigation }: Props) {
+  const { data, error, loading } = useQuery<{ pets: Pet[] }>(GET_PETS);
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -19,8 +22,23 @@ export function Pets({ navigation }: Props) {
     navigation.navigate(Routes.NEW_PET);
   };
 
-  // Get from server
-  const pets = [];
+  if (loading) {
+    return (
+      <View>
+        <Title>Loading...</Title>
+      </View>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <View>
+        <Title>{`Error: ${error}`}</Title>
+      </View>
+    );
+  }
+
+  const { pets } = data;
 
   if (pets.length === 0) {
     return (
@@ -36,7 +54,21 @@ export function Pets({ navigation }: Props) {
 
   return (
     <View style={styles.content}>
-      <Text>Pets</Text>
+      <ScrollView>
+        {pets.map((pet) => (
+          <View key={pet.petId} style={styles.petCard}>
+            {pet.picture ? (
+              <Avatar.Image
+                style={styles.petAvatar}
+                source={{ uri: pet.picture }}
+              />
+            ) : (
+              <Avatar.Icon style={styles.petAvatar} icon="paw" />
+            )}
+            <Title>{pet.name}</Title>
+          </View>
+        ))}
+      </ScrollView>
       <FAB onPress={onPressPlus} icon="plus" style={styles.plusButton} />
     </View>
   );
