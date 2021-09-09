@@ -25,8 +25,10 @@ module.exports = {
     alias: {
       '@db/users': path.resolve(__dirname, './src/db/users'),
       '@db/pets': path.resolve(__dirname, './src/db/pets'),
+      '@db/posts': path.resolve(__dirname, './src/db/posts'),
       '@services/users': path.resolve(__dirname, './src/services/users'),
       '@services/pets': path.resolve(__dirname, './src/services/pets'),
+      '@services/posts': path.resolve(__dirname, './src/services/posts'),
       '@types': path.resolve(__dirname, './src/types'),
       '@s3': path.resolve(__dirname, './src/s3'),
     },

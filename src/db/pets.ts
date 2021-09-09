@@ -1,9 +1,6 @@
-import { DataBrew, DynamoDB } from 'aws-sdk';
+import { DynamoDB } from 'aws-sdk';
 
-import { Pet } from '@types';
-import { validate } from 'graphql';
-
-type PetUpdateInput = Partial<Omit<Pet, 'userId' | 'petId'>>;
+import { Pet, UpdatePetInput } from '@types';
 
 export async function createOne(input: Pet): Promise<Pet> {
   const params = {
@@ -35,7 +32,7 @@ export async function readAll(userId: string): Promise<Pet[] | null> {
 export async function updateOne(
   petId: string,
   userId: string,
-  attrs: PetUpdateInput
+  attrs: UpdatePetInput
 ) {
   if (attrs.name == null && attrs.picture == null) {
     return;

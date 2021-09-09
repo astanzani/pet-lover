@@ -6,3 +6,5 @@ export interface Pet {
 }
 
 export type AddPetInput = Omit<Pet, 'petId' | 'userId'>;
+
+export type UpdatePetInput = Partial<Omit<Pet, 'userId' | 'petId'>>;

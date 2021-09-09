@@ -26,12 +26,25 @@ export const typeDefs = gql`
     picture: String
   }
 
+  input AddPostInput {
+    petId: String!
+    content: String!
+  }
+
+  type Post {
+    postId: String!
+    petId: String!
+    content: String!
+  }
+
   type Mutation {
     addUser(props: AddUserInput!): User!
     uploadUserProfilePicture(picture: Upload!): String!
 
     addPet(props: AddPetInput!): Pet!
     uploadPetProfilePicture(petId: String!, picture: Upload!): String!
+
+    addPost(props: AddPostInput!): Post!
   }
 
   type Query {
