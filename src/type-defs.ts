@@ -28,13 +28,15 @@ export const typeDefs = gql`
 
   input AddPostInput {
     petId: String!
-    content: String!
+    text: String
+    pictures: [Upload!]
   }
 
   type Post {
     postId: String!
     petId: String!
-    content: String!
+    text: String
+    pictures: [String!]
   }
 
   type Mutation {

@@ -28,6 +28,7 @@ const config: Serverless = {
       DYNAMODB_FRIENDSHIPS_TABLE: '${self:service}-friendships-${sls:stage}',
       DYNAMODB_FEEDS_TABLE: '${self:service}-feeds-${sls:stage}',
       PROFILE_PICTURES_BUCKET: '${self:service}-profile-pictures-${sls:stage}',
+      POSTS_PICTURES_BUCKET: '${self:service}-posts-pictures-${sls:stage}',
     },
     iam: {
       role: {
@@ -134,6 +135,20 @@ const config: Serverless = {
                   [
                     {
                       'Fn::GetAtt': ['ProfilePicturesBucket', 'Arn'],
+                    },
+                    '/*',
+                  ],
+                ],
+              },
+              {
+                'Fn::GetAtt': ['PostsPicturesBucket', 'Arn'],
+              },
+              {
+                'Fn::Join': [
+                  '',
+                  [
+                    {
+                      'Fn::GetAtt': ['PostsPicturesBucket', 'Arn'],
                     },
                     '/*',
                   ],
@@ -507,7 +522,7 @@ const config: Serverless = {
           BucketName: '${self:provider.environment.PROFILE_PICTURES_BUCKET}',
         },
       },
-      BucketPublicReadPolicy: {
+      ProfilePicturesBucketReadPolicy: {
         Type: 'AWS::S3::BucketPolicy',
         Properties: {
           Bucket: {
@@ -521,6 +536,33 @@ const config: Serverless = {
                 Action: 's3:GetObject',
                 Resource:
                   'arn:aws:s3:::${self:provider.environment.PROFILE_PICTURES_BUCKET}/*',
+                Principal: '*',
+              },
+            ],
+          },
+        },
+      },
+      PostsPicturesBucket: {
+        Type: 'AWS::S3::Bucket',
+        Properties: {
+          AccessControl: 'PublicRead',
+          BucketName: '${self:provider.environment.POSTS_PICTURES_BUCKET}',
+        },
+      },
+      PostsPicturesBucketBucketReadPolicy: {
+        Type: 'AWS::S3::BucketPolicy',
+        Properties: {
+          Bucket: {
+            Ref: 'PostsPicturesBucket',
+          },
+          PolicyDocument: {
+            Version: '2012-10-17',
+            Statement: [
+              {
+                Effect: 'Allow',
+                Action: 's3:GetObject',
+                Resource:
+                  'arn:aws:s3:::${self:provider.environment.POSTS_PICTURES_BUCKET}/*',
                 Principal: '*',
               },
             ],

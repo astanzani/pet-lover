@@ -8,6 +8,7 @@ declare global {
       DYNAMODB_FRIENDSHIPS_TABLE: string;
       DYNAMODB_FEEDS_TABLE: string;
       PROFILE_PICTURES_BUCKET: string;
+      POSTS_PICTURES_BUCKET: string;
       NODE_ENV?: string;
     }
   }
