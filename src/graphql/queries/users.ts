@@ -1,6 +1,8 @@
-import { gql } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 
-export const GET_ME = gql`
+import { User } from '@types';
+
+const GET_ME = gql`
   query Me {
     me {
       userId
@@ -9,3 +11,7 @@ export const GET_ME = gql`
     }
   }
 `;
+
+export function useGetMeQuery() {
+  return useQuery<{ me: User }>(GET_ME);
+}

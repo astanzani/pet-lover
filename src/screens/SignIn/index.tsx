@@ -58,7 +58,10 @@ export function SignIn({ navigation }: Props) {
         style={{ width, maxHeight: 100, marginBottom: theme.spacing(3) }}
         resizeMode="contain"
       />
-      <ScrollView style={styles.contentWrapper}>
+      <ScrollView
+        style={styles.contentWrapper}
+        keyboardShouldPersistTaps="always"
+      >
         <View style={styles.formWrapper}>
           <TextInput
             style={styles.input}

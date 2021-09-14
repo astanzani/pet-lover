@@ -1,15 +1,10 @@
 import React from 'react';
-import { useQuery } from '@apollo/client';
-import { Avatar, Chip, Title, useTheme } from 'react-native-paper';
+import { Avatar, Chip, Title } from 'react-native-paper';
 
-import { GET_ME } from '@graphql/queries';
-import { User } from '@types';
-import getStyles from './styles';
+import { useGetMeQuery } from '@graphql/queries';
 
 export function UserCard() {
-  const { data, loading, error } = useQuery<{ me: User }>(GET_ME);
-  const theme = useTheme();
-  const styles = getStyles(theme);
+  const { data, loading, error } = useGetMeQuery();
 
   if (loading) {
     return null;

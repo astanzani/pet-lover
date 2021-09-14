@@ -1,20 +1,13 @@
 import React, { useState } from 'react';
 import { View, Pressable } from 'react-native';
-import {
-  useTheme,
-  Avatar,
-  FAB,
-  TextInput,
-  Dialog,
-  Portal,
-} from 'react-native-paper';
+import { useTheme, Avatar, FAB, TextInput } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import { useMutation } from '@apollo/client';
 import { ReactNativeFile } from 'apollo-upload-client';
 import { NavigationProp } from '@react-navigation/native';
 
-import { Button } from '@components';
-import { UPLOAD_PET_PICTURE, SAVE_PET } from '@graphql/mutations';
+import { Button, FilePickerDialog } from '@components';
+import { UPLOAD_PET_PICTURE, useAddPetMutation } from '@graphql/mutations';
 import { GET_PETS } from '@graphql/queries';
 import { PetsStackParamList } from '@types';
 import getStyles from './styles';
@@ -28,7 +21,7 @@ export function NewPet({ navigation }: Props) {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState<string | undefined>(undefined);
-  const [savePet] = useMutation(SAVE_PET);
+  const [addPet] = useAddPetMutation();
   const [uploadPicture] =
     useMutation<{ addPicture: string; file: Blob }>(UPLOAD_PET_PICTURE);
   const theme = useTheme();
@@ -46,31 +39,19 @@ export function NewPet({ navigation }: Props) {
     hideDialog();
   };
 
-  const selectPicture = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-    });
-    handlePickedImage(result);
-  };
-
-  const takePicture = async () => {
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    });
-    handlePickedImage(result);
-  };
-
   const submit = async () => {
     setLoading(true);
 
     try {
-      const res = await savePet({
+      const { data, errors } = await addPet({
         variables: { props: { name } },
         refetchQueries: imageUri ? [] : [GET_PETS],
       });
-      const id = res.data.addPet.petId;
+      if (errors || !data) {
+        throw new Error('Failed to add pet');
+      }
+
+      const id = data.addPet.petId;
 
       if (imageUri) {
         await uploadPicture({
@@ -122,22 +103,12 @@ export function NewPet({ navigation }: Props) {
       >
         Add
       </Button>
-      <Portal>
-        <Dialog visible={dialogVisible} onDismiss={hideDialog}>
-          <Dialog.Title>Add a profile picture</Dialog.Title>
-          <Dialog.Content style={styles.picDialogContent}>
-            <Button icon="camera" onPress={takePicture}>
-              Take a picture
-            </Button>
-            <Button icon="image-multiple" onPress={selectPicture}>
-              Pick from gallery
-            </Button>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialog}>Cancel</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+      <FilePickerDialog
+        title="Add a profile picture"
+        open={dialogVisible}
+        onPickImage={handlePickedImage}
+        onDismiss={hideDialog}
+      />
     </View>
   );
 }

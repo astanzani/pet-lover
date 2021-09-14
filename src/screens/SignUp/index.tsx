@@ -8,7 +8,6 @@ import {
   HelperText,
 } from 'react-native-paper';
 import { Formik } from 'formik';
-import { TextInputMask } from 'react-native-masked-text';
 import { NavigationProp } from '@react-navigation/native';
 import { Auth } from '@aws-amplify/auth';
 
@@ -57,7 +56,9 @@ export function SignUp({ navigation }: Props) {
         password: values.password,
       });
     } catch (e) {
-      setError(e.message);
+      if (e instanceof Error) {
+        setError(e.message);
+      }
       setLoading(false);
     }
   };
@@ -81,12 +82,7 @@ export function SignUp({ navigation }: Props) {
           initialValues={{ name: '', email: '', phone: '', password: '' }}
           onSubmit={signUp}
         >
-          {({
-            values,
-            handleChange,
-            handleSubmit,
-            /* and other goodies */
-          }) => (
+          {({ values, handleChange, handleSubmit }) => (
             <View>
               <TextInput
                 style={styles.input}
@@ -116,14 +112,6 @@ export function SignUp({ navigation }: Props) {
                 placeholder="(ddd) 99999-9999"
                 onChangeText={handleChange('phone')}
                 value={values.phone}
-                // render={(props) => (
-                //   // @ts-expect-error: Ref is not used
-                //   <TextInputMask
-                //     {...props}
-                //     type="cel-phone"
-                //     options={{ maskType: 'BRL' }}
-                //   />
-                // )}
               />
               <TextInput
                 style={styles.input}

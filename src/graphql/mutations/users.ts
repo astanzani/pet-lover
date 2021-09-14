@@ -1,7 +1,8 @@
-import { gql } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
+import { AddUserInput, User } from '@types';
 
-export const SAVE_USER = gql`
-  mutation saveUser($props: AddUserInput!) {
+export const ADD_USER = gql`
+  mutation addUser($props: AddUserInput!) {
     addUser(props: $props) {
       userId
       name
@@ -15,3 +16,7 @@ export const UPLOAD_PICTURE = gql`
     uploadUserProfilePicture(picture: $picture)
   }
 `;
+
+export function useAddUserMutation() {
+  return useMutation<{ addUser: User; props: AddUserInput }>(ADD_USER);
+}

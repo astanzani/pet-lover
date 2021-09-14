@@ -8,15 +8,14 @@ import {
   TextInput,
   HelperText,
 } from 'react-native-paper';
-import { Auth, CognitoUser } from '@aws-amplify/auth';
+import { Auth } from '@aws-amplify/auth';
 import { RouteProp } from '@react-navigation/native';
 
 import { Button } from '@components';
-import { AddUserInput, SignInStackParamList, User } from '@types';
+import { SignInStackParamList } from '@types';
+import { useAddUserMutation } from '@graphql/mutations';
 import { Routes } from '@config';
 import getStyles from './styles';
-import { useMutation } from '@apollo/client';
-import { SAVE_USER } from '@graphql/mutations';
 
 interface Props {
   navigation: NavigationProp<SignInStackParamList>;
@@ -28,9 +27,7 @@ export function ConfirmSignUp({ navigation, route }: Props) {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [saveUser] =
-    useMutation<{ saveUser: User; props: AddUserInput }>(SAVE_USER);
-
+  const [addUser] = useAddUserMutation();
   useEffect(() => {
     navigation.addListener('beforeRemove', (e) => {
       // Prevent user going back to sign in / sign up.
@@ -49,7 +46,7 @@ export function ConfirmSignUp({ navigation, route }: Props) {
       await Auth.confirmSignUp(email, code);
       const user = await Auth.signIn(email, password);
       const { name } = user.attributes;
-      await saveUser({
+      await addUser({
         variables: { props: { email, name } },
       });
     } catch (e) {

@@ -6,8 +6,11 @@ export default (theme: ReactNativePaper.Theme) =>
       flex: 1,
       padding: theme.spacing(2),
     },
+    scroll: {
+      flexGrow: 1,
+    },
     content: {
-      flex: 1,
+      justifyContent: 'space-between',
     },
     petPicker: {
       width: '50%',
@@ -32,5 +35,32 @@ export default (theme: ReactNativePaper.Theme) =>
     petPickerModalItemSelected: {
       backgroundColor: theme.colors.background,
       borderRadius: 8,
+    },
+    toolbar: {
+      flexDirection: 'row',
+    },
+    toolbarIcon: {
+      marginHorizontal: 0,
+    },
+    imagesContainer: {
+      // flex: 1,
+      width: '100%',
+      height: 400,
+      flexDirection: 'row',
+    },
+    imagePreview: {
+      flex: 1,
+      resizeMode: 'cover',
+      // width: '100%',
+      // height: 100,
+    },
+    moreImagesContainer: {
+      width: 100,
+      height: 100,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    input: {
+      marginVertical: theme.spacing(2),
     },
   });

@@ -1,7 +1,9 @@
-import { gql } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 
-export const SAVE_PET = gql`
-  mutation savePet($props: AddPetInput!) {
+import { AddPetInput, Pet } from '@types';
+
+export const ADD_PET = gql`
+  mutation addPet($props: AddPetInput!) {
     addPet(props: $props) {
       petId
       userId
@@ -16,3 +18,7 @@ export const UPLOAD_PET_PICTURE = gql`
     uploadPetProfilePicture(petId: $petId, picture: $picture)
   }
 `;
+
+export function useAddPetMutation() {
+  return useMutation<{ addPet: Pet; props: AddPetInput }>(ADD_PET);
+}

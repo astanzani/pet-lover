@@ -2,10 +2,9 @@ import React from 'react';
 import { NavigationProp } from '@react-navigation/native';
 import { View, ScrollView } from 'react-native';
 import { Title, Subheading, useTheme, FAB, Avatar } from 'react-native-paper';
-import { useQuery } from '@apollo/client';
 
-import { GET_PETS } from '@graphql/queries';
-import { Pet, PetsStackParamList } from '@types';
+import { useGetPetsQuery } from '@graphql/queries';
+import { PetsStackParamList } from '@types';
 import { Routes } from '@config';
 import getStyles from './styles';
 
@@ -14,7 +13,7 @@ interface Props {
 }
 
 export function Pets({ navigation }: Props) {
-  const { data, error, loading } = useQuery<{ pets: Pet[] }>(GET_PETS);
+  const { data, error, loading } = useGetPetsQuery();
   const theme = useTheme();
   const styles = getStyles(theme);
 

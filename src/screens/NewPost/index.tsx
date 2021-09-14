@@ -1,38 +1,39 @@
-import React, { useState, useRef } from 'react';
-import { View } from 'react-native';
-import {
-  Avatar,
-  Text,
-  Title,
-  IconButton,
-  TextInput,
-  TouchableRipple,
-  List,
-  useTheme,
-} from 'react-native-paper';
-import { useQuery } from '@apollo/client';
-import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import React, { useState } from 'react';
+import { View, TextInput, ScrollView } from 'react-native';
+import { Text, IconButton, Snackbar, useTheme } from 'react-native-paper';
+import * as ImagePicker from 'expo-image-picker';
+import { ReactNativeFile } from 'apollo-upload-client';
+import { NavigationProp } from '@react-navigation/core';
 
-import { GET_PETS } from '@graphql/queries';
-import { Pet } from '@types';
+import { useGetPetsQuery } from '@graphql/queries';
+import { useAddPostMutation } from '@graphql/mutations';
+import { Button, FilePickerDialog, ImageGallery } from '@components';
+import { PetPicker } from './PetPicker';
+import { PostsStackParamList } from '@types';
 import getStyles from './styles';
 
-export function NewPost() {
+interface Props {
+  navigation: NavigationProp<PostsStackParamList>;
+}
+
+export function NewPost({ navigation }: Props) {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const snapPoints = ['50%'];
-  const { data, loading, error } = useQuery<{ pets: Pet[] }>(GET_PETS);
+
+  const { data, loading, error } = useGetPetsQuery();
+  const [submitting, setSubmitting] = useState(false);
   const [selectedPetIdx, setSelectedPetIdx] = useState(0);
+  const [content, setContent] = useState('');
+  const [addPost] = useAddPostMutation();
+  const [images, setImages] = useState<Array<string>>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
 
-  const openPetPicker = () => {
-    bottomSheetRef.current?.present();
-  };
+  const openDialog = () => setDialogOpen(true);
+  const closeDialog = () => setDialogOpen(false);
 
-  const selectPet = (index: number) => {
-    setSelectedPetIdx(index);
-    bottomSheetRef.current?.close();
-  };
+  const showSnackbar = () => setSnackbarVisible(true);
+  const hideSnackbar = () => setSnackbarVisible(false);
 
   if (loading) {
     return (
@@ -43,6 +44,8 @@ export function NewPost() {
   }
 
   if (error || !data) {
+    console.log(JSON.stringify(error, null, 2));
+
     return (
       <View>
         <Text>{`Error: ${error}`}</Text>
@@ -62,69 +65,123 @@ export function NewPost() {
 
   const selectedPet = pets[selectedPetIdx];
 
+  const handlePickedPet = (idx: number) => {
+    setSelectedPetIdx(idx);
+  };
+
+  const handlePickedImage = async (result: ImagePicker.ImagePickerResult) => {
+    if (!result.cancelled) {
+      setImages([...images, result.uri]);
+      closeDialog();
+    }
+  };
+
+  const handleDeletedImage = (idx: number) => {
+    setImages(images.filter((_, i) => idx !== i));
+  };
+
+  const hasContent = () => {
+    const hasImages = images.length > 0;
+    const hasText = !!content;
+
+    return hasImages || hasText;
+  };
+
+  const resetState = () => {
+    setContent('');
+    setImages([]);
+  };
+
+  const submitPost = async () => {
+    setSubmitting(true);
+
+    const files = images.map(
+      (image) =>
+        new ReactNativeFile({ uri: image, name: 'image', type: 'image/jpeg' })
+    );
+
+    try {
+      await addPost({
+        variables: {
+          props: { text: content, petId: selectedPet.petId, pictures: files },
+        },
+      });
+      showSnackbar();
+      resetState();
+      setTimeout(() => navigation.goBack(), 1000);
+    } catch (e) {
+      if (e instanceof Error) {
+        throw e;
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <View style={styles.root}>
-      <TouchableRipple style={styles.petPicker} onPress={openPetPicker}>
-        <>
-          {selectedPet.picture ? (
-            <Avatar.Image
-              style={styles.petPickerAvatar}
-              size={50}
-              source={{ uri: selectedPet.picture }}
-            />
-          ) : (
-            <Avatar.Icon style={styles.petPickerAvatar} size={50} icon="paw" />
-          )}
-          <Title>{selectedPet.name}</Title>
-          <IconButton icon="chevron-down" />
-        </>
-      </TouchableRipple>
-      <View>
-        <TextInput
-          mode="outlined"
-          placeholder="Type here..."
-          multiline={true}
-          numberOfLines={15}
-        />
-      </View>
-      <BottomSheetModal
-        ref={bottomSheetRef}
-        snapPoints={snapPoints}
-        backdropComponent={(props) => (
-          <BottomSheetBackdrop
-            {...props}
-            appearsOnIndex={0}
-            disappearsOnIndex={-1}
-          />
-        )}
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
       >
-        <View style={styles.petPickerModalContent}>
-          {pets.map((pet, index) => (
-            <List.Item
-              key={pet.petId}
-              title={pet.name}
-              onPress={selectPet.bind(null, index)}
-              style={
-                selectedPetIdx === index
-                  ? styles.petPickerModalItemSelected
-                  : undefined
-              }
-              left={() =>
-                pet.picture ? (
-                  <Avatar.Image size={48} source={{ uri: pet.picture }} />
-                ) : (
-                  <Avatar.Icon size={48} icon="paw" />
-                )
-              }
-              right={() =>
-                selectedPetIdx === index ? (
-                  <IconButton icon="check" color={theme.colors.primary} />
-                ) : null
-              }
-            />
-          ))}
+        <View>
+          <PetPicker
+            selectedPet={selectedPet}
+            pets={pets}
+            onSelectPet={handlePickedPet}
+          />
+          <TextInput
+            placeholder="Type here..."
+            multiline={true}
+            value={content}
+            onChangeText={setContent}
+            style={styles.input}
+          />
+          <ImageGallery images={images} onDelete={handleDeletedImage} />
         </View>
-      </BottomSheetModal>
+        <View>
+          <View style={styles.toolbar}>
+            <IconButton
+              icon="image"
+              color={theme.colors.primary}
+              onPress={openDialog}
+              size={32}
+              style={styles.toolbarIcon}
+            />
+            <IconButton
+              icon="video"
+              color={theme.colors.primary}
+              onPress={openDialog}
+              size={32}
+              style={styles.toolbarIcon}
+            />
+            <IconButton
+              icon="attachment"
+              color={theme.colors.primary}
+              onPress={openDialog}
+              size={32}
+              style={styles.toolbarIcon}
+            />
+          </View>
+          <Button
+            mode="contained"
+            onPress={submitPost}
+            loading={submitting}
+            disabled={!hasContent()}
+          >
+            Post
+          </Button>
+        </View>
+      </ScrollView>
+      <FilePickerDialog
+        title="Add a photo to your post"
+        open={dialogOpen}
+        onPickImage={handlePickedImage}
+        onDismiss={closeDialog}
+      />
+      <Snackbar visible={snackbarVisible} onDismiss={hideSnackbar}>
+        Post submitted!
+      </Snackbar>
     </View>
   );
 }
