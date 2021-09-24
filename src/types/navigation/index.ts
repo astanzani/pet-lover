@@ -3,6 +3,7 @@ import { Routes } from '@config';
 export type RootStackParamList = {
   [Routes.SIGN_IN_STACK]: undefined;
   [Routes.HOME_STACK]: undefined;
+  [Routes.FIND_PETS_TO_FOLLOW]: undefined;
 };
 
 export type SignInStackParamList = {

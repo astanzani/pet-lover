@@ -15,6 +15,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 import { lightTheme, mapToNavigationTheme } from './src/config';
 import { Main } from './src';
+import { PaginatedList, Pet } from '@types';
 
 Auth.configure({
   userPoolId: REACT_APP_USER_POOL_ID,
@@ -41,7 +42,29 @@ const authLink = setContext((_, { headers }) => {
 
 const client = new ApolloClient({
   link: authLink.concat(uploadLink),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          suggestedPets: {
+            keyArgs: false,
+            merge(
+              existing: PaginatedList<Pet> = { items: [] },
+              incoming: PaginatedList<Pet>
+            ) {
+              console.log('EXISTING: ', existing);
+              console.log('INCOMING: ', incoming);
+
+              return {
+                cursor: incoming.cursor,
+                items: [...existing.items, ...incoming.items],
+              };
+            },
+          },
+        },
+      },
+    },
+  }),
 });
 
 export default function App() {

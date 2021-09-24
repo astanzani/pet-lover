@@ -5,6 +5,7 @@ export enum Routes {
   CONFIRM_SIGN_UP = 'ConfirmSignUp',
 
   HOME_STACK = 'HomeStack',
+  FIND_PETS_TO_FOLLOW = 'FindPetsToFollow',
   FEED = 'Feed',
   MORE = 'More',
 

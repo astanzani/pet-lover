@@ -1,9 +1,9 @@
-import { Button } from '@components';
 import React, { useState } from 'react';
 import { View, Image, Pressable } from 'react-native';
 import { IconButton, useTheme, Dialog, Portal } from 'react-native-paper';
 import GestureRecognizer from 'react-native-swipe-gestures';
 
+import { Button } from '../Button';
 import getStyles from './styles';
 
 interface Props {

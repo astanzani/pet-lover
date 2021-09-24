@@ -6,3 +6,4 @@ export * from './ConfirmSignUp';
 export * from './NewPost';
 export * from './Pets';
 export * from './NewPet';
+export * from './FindPetsToFollow';
