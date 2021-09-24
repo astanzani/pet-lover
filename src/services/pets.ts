@@ -1,8 +1,8 @@
 import { v4 } from 'uuid';
 import { FileUpload } from 'graphql-upload';
 
-import { AddPetInput, Pet } from '@types';
-import { createOne, readAll, updateOne } from '@db/pets';
+import { AddPetInput, Pet, PaginatedList } from '@types';
+import { createOne, readAll, updateOne, scan } from '@db/pets';
 import { uploadFile } from '@s3';
 
 const PET_ID_PREFIX = 'PET#';
@@ -56,4 +56,17 @@ export async function uploadProfilePicture(
   await updateOne(petId, USER_ID_PREFIX + userId, { picture: url });
 
   return url;
+}
+
+export async function getSuggestedPets(
+  first: number,
+  cursor?: string
+): Promise<PaginatedList<Pet>> {
+  const pets = await scan(first, cursor);
+
+  if (pets == null) {
+    throw new Error('Failed to get suggested pets');
+  }
+
+  return pets;
 }

@@ -1,6 +1,6 @@
 import { DynamoDB } from 'aws-sdk';
 
-import { Pet, UpdatePetInput } from '@types';
+import { Pet, UpdatePetInput, PaginatedList } from '@types';
 
 export async function createOne(input: Pet): Promise<Pet> {
   const params = {
@@ -27,6 +27,35 @@ export async function readAll(userId: string): Promise<Pet[] | null> {
   const result = await db.query(params).promise();
 
   return (result.Items as Pet[]) ?? null;
+}
+
+export async function scan(
+  first: number,
+  lastCursor?: string
+): Promise<PaginatedList<Pet> | null> {
+  const startKey = lastCursor
+    ? (JSON.parse(lastCursor) as DynamoDB.Key)
+    : undefined;
+
+  const params: DynamoDB.DocumentClient.ScanInput = {
+    TableName: process.env.DYNAMODB_PETS_TABLE,
+    Limit: first,
+    ExclusiveStartKey: startKey,
+  };
+
+  const db = new DynamoDB.DocumentClient();
+  const result = await db.scan(params).promise();
+
+  if (!result.Items || result.Items.length === 0) {
+    return null;
+  }
+
+  const pets = result.Items as Pet[];
+  const cursor = result.LastEvaluatedKey
+    ? JSON.stringify(result.LastEvaluatedKey)
+    : undefined;
+
+  return { items: pets, cursor };
 }
 
 export async function updateOne(

@@ -8,7 +8,6 @@ export const resolvers = {
   Query: {
     ...usersQueries,
     ...petsQueries,
-    testMessage: () => 'Hello World!',
   },
   Mutation: {
     ...usersMutations,

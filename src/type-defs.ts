@@ -26,6 +26,11 @@ export const typeDefs = gql`
     picture: String
   }
 
+  type PaginatedPets {
+    items: [Pet!]!
+    cursor: String
+  }
+
   input AddPostInput {
     petId: String!
     text: String
@@ -52,6 +57,6 @@ export const typeDefs = gql`
   type Query {
     me: User!
     pets: [Pet!]!
-    testMessage: String!
+    suggestedPets(first: Int = 10, cursor: String): PaginatedPets!
   }
 `;
