@@ -52,9 +52,6 @@ const client = new ApolloClient({
               existing: PaginatedList<Pet> = { items: [] },
               incoming: PaginatedList<Pet>
             ) {
-              console.log('EXISTING: ', existing);
-              console.log('INCOMING: ', incoming);
-
               return {
                 cursor: incoming.cursor,
                 items: [...existing.items, ...incoming.items],

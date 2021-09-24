@@ -13,7 +13,9 @@ export function FindPetsToFollow() {
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  const { data, loading, error, fetchMore } = useGetSuggestedPetsQuery();
+  const { data, loading, error, fetchMore } = useGetSuggestedPetsQuery({
+    variables: { first: 15 },
+  });
 
   if (loading) {
     return <ActivityIndicator />;
@@ -33,9 +35,12 @@ export function FindPetsToFollow() {
 
   const renderItem = (item: Pet) => <FollowPetCard pet={item} />;
   const keyExtractor = (item: Pet) => item.petId;
-  const loadMore = () =>
-    suggestedPets.cursor &&
-    fetchMore({ variables: { cursor: suggestedPets.cursor } });
+  const loadMore = async () => {
+    const { cursor } = suggestedPets;
+    if (cursor) {
+      return fetchMore({ variables: { cursor: suggestedPets.cursor } });
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
