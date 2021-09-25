@@ -1,6 +1,8 @@
 import { DynamoDB } from 'aws-sdk';
+import { isEmpty } from 'lodash';
 
 import { Pet, UpdatePetInput, PaginatedList } from '@types';
+import { buildFilterExpression, buildUpateExpression } from './utils';
 
 export async function createOne(input: Pet): Promise<Pet> {
   const params = {
@@ -29,24 +31,35 @@ export async function readAll(userId: string): Promise<Pet[] | null> {
   return (result.Items as Pet[]) ?? null;
 }
 
+interface Filter {
+  field: keyof Pet;
+  value: string;
+  op: '=' | '<>' | '<' | '<=' | '>' | '>=';
+}
+
 export async function scan(
   first: number,
-  lastCursor?: string
+  lastCursor?: string,
+  filters?: Filter[]
 ): Promise<PaginatedList<Pet> | null> {
   const startKey = lastCursor
     ? (JSON.parse(lastCursor) as DynamoDB.Key)
     : undefined;
 
+  const filterExpression = filters ? buildFilterExpression(filters) : undefined;
+
   const params: DynamoDB.DocumentClient.ScanInput = {
     TableName: process.env.DYNAMODB_PETS_TABLE,
     Limit: first,
     ExclusiveStartKey: startKey,
+    FilterExpression: filterExpression?.expression,
+    ExpressionAttributeValues: filterExpression?.values,
   };
 
   const db = new DynamoDB.DocumentClient();
   const result = await db.scan(params).promise();
 
-  if (!result.Items || result.Items.length === 0) {
+  if (!result.Items) {
     return null;
   }
 
@@ -63,26 +76,17 @@ export async function updateOne(
   userId: string,
   attrs: UpdatePetInput
 ) {
-  if (attrs.name == null && attrs.picture == null) {
+  if (isEmpty(attrs)) {
     return;
   }
 
-  let updateExpr = 'SET ';
-  let attrValues: { [key: string]: string } = {};
-
-  for (const [key, val] of Object.entries(attrs)) {
-    updateExpr += `${key} = :${key}, `;
-    attrValues[`:${key}`] = val;
-  }
-
-  // Remove trailing comma and space
-  updateExpr = updateExpr.slice(0, updateExpr.length - 2);
+  const { expression, values } = buildUpateExpression(attrs);
 
   const params: DynamoDB.DocumentClient.UpdateItemInput = {
     Key: { petId: petId, userId: userId },
     TableName: process.env.DYNAMODB_PETS_TABLE,
-    ExpressionAttributeValues: attrValues,
-    UpdateExpression: updateExpr,
+    UpdateExpression: expression,
+    ExpressionAttributeValues: values,
   };
 
   const db = new DynamoDB.DocumentClient();

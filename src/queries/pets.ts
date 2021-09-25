@@ -1,4 +1,5 @@
 import { getPets, getSuggestedPets } from '@services/pets';
+import { ApolloContext } from '@types';
 
 export const petsQueries = {
   pets(_parent: any, _args: any, { userId }: { userId: string }) {
@@ -6,8 +7,9 @@ export const petsQueries = {
   },
   suggestedPets(
     _parent: any,
-    { first, cursor }: { first: number; cursor?: string }
+    { first, cursor }: { first: number; cursor?: string },
+    { userId }: ApolloContext
   ) {
-    return getSuggestedPets(first, cursor);
+    return getSuggestedPets(first, userId, cursor);
   },
 };

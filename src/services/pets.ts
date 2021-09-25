@@ -60,9 +60,12 @@ export async function uploadProfilePicture(
 
 export async function getSuggestedPets(
   first: number,
+  userId: string,
   cursor?: string
 ): Promise<PaginatedList<Pet>> {
-  const pets = await scan(first, cursor);
+  const pets = await scan(first, cursor, [
+    { field: 'userId', value: USER_ID_PREFIX + userId, op: '<>' },
+  ]);
 
   if (pets == null) {
     throw new Error('Failed to get suggested pets');
