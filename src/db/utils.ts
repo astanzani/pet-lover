@@ -12,7 +12,7 @@ interface FilterExpression {
   values: { [key: string]: unknown };
 }
 
-interface Filter<T> {
+export interface Filter<T> {
   field: keyof T;
   value: string;
   op: '=' | '<>' | '<' | '<=' | '>' | '>=';

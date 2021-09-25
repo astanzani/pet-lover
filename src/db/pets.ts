@@ -2,7 +2,7 @@ import { DynamoDB } from 'aws-sdk';
 import { isEmpty } from 'lodash';
 
 import { Pet, UpdatePetInput, PaginatedList } from '@types';
-import { buildFilterExpression, buildUpateExpression } from './utils';
+import { buildFilterExpression, buildUpateExpression, Filter } from './utils';
 
 export async function createOne(input: Pet): Promise<Pet> {
   const params = {
@@ -31,16 +31,10 @@ export async function readAll(userId: string): Promise<Pet[] | null> {
   return (result.Items as Pet[]) ?? null;
 }
 
-interface Filter {
-  field: keyof Pet;
-  value: string;
-  op: '=' | '<>' | '<' | '<=' | '>' | '>=';
-}
-
 export async function scan(
   first: number,
   lastCursor?: string,
-  filters?: Filter[]
+  filters?: Filter<Pet>[]
 ): Promise<PaginatedList<Pet> | null> {
   const startKey = lastCursor
     ? (JSON.parse(lastCursor) as DynamoDB.Key)
