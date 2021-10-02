@@ -26,9 +26,15 @@ module.exports = {
       '@db/users': path.resolve(__dirname, './src/db/users'),
       '@db/pets': path.resolve(__dirname, './src/db/pets'),
       '@db/posts': path.resolve(__dirname, './src/db/posts'),
+      '@db/friendships': path.resolve(__dirname, './src/db/friendships'),
+      '@db/utils': path.resolve(__dirname, './src/db/utils'),
       '@services/users': path.resolve(__dirname, './src/services/users'),
       '@services/pets': path.resolve(__dirname, './src/services/pets'),
       '@services/posts': path.resolve(__dirname, './src/services/posts'),
+      '@services/friendships': path.resolve(
+        __dirname,
+        './src/services/friendships'
+      ),
       '@types': path.resolve(__dirname, './src/types'),
       '@s3': path.resolve(__dirname, './src/s3'),
     },

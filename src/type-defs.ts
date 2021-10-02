@@ -52,6 +52,8 @@ export const typeDefs = gql`
     uploadPetProfilePicture(petId: String!, picture: Upload!): String!
 
     addPost(props: AddPostInput!): Post!
+
+    followPet(petId: String!, friendId: String!): String!
   }
 
   type Query {

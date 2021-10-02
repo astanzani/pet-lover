@@ -54,3 +54,7 @@ export function buildFilterExpression<T>(filters: Filter<T>[]): DbExpression {
     values,
   };
 }
+
+export const buildUserId = (id: string) => 'USER#' + id;
+export const buildPetId = (id: string) => 'PET#' + id;
+export const buildPostId = (id: string) => 'POST#' + id;
