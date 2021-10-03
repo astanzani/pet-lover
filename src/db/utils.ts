@@ -7,15 +7,11 @@ interface DbExpression {
   values: { [key: string]: unknown };
 }
 
-interface FilterExpression {
-  expression: string;
-  values: { [key: string]: unknown };
-}
-
 export interface Filter<T> {
   field: keyof T;
-  value: string;
-  op: '=' | '<>' | '<' | '<=' | '>' | '>=';
+  value: string | string[];
+  op: '=' | '<>' | '<' | '<=' | '>' | '>=' | 'in';
+  not?: boolean;
 }
 
 export const buildUpateExpression = (data: UpdateData): DbExpression => {
@@ -41,13 +37,27 @@ export function buildFilterExpression<T>(filters: Filter<T>[]): DbExpression {
   let values: { [key: string]: string } = {};
 
   for (const filter of filters) {
-    const { field, value, op } = filter;
-    expr += `${field} ${op} :${field}, `;
-    values[`:${field}`] = value;
+    const isListFilter = Array.isArray(filter.value);
+    const { field, value, op, not } = filter;
+    expr += isListFilter
+      ? `${not ? 'not ' : ''}(${field} ${op} (${(value as string[])
+          .map((_v, i) => `:${field}_${i}`)
+          .join()})) and `
+      : `${field} ${op} :${field} and `;
+    if (isListFilter) {
+      (value as string[]).forEach((v, i) => {
+        values[`:${field}_${i}`] = v;
+      });
+    } else {
+      values[`:${field}`] = value as string;
+    }
   }
 
   // Remove trailing comma and space
-  expr = expr.slice(0, expr.length - 2);
+  expr = expr.slice(0, expr.length - 5);
+
+  console.log('FILTER EXPRESSION: ', expr);
+  console.log('FILTER VALUES: ', values);
 
   return {
     expression: expr,

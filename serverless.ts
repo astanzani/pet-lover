@@ -25,7 +25,7 @@ const config: Serverless = {
       DYNAMODB_PETS_TABLE: '${self:service}-pets-${sls:stage}',
       DYNAMODB_POSTS_TABLE: '${self:service}-posts-${sls:stage}',
       DYNAMODB_COMMENTS_TABLE: '${self:service}-comments-${sls:stage}',
-      DYNAMODB_FRIENDSHIPS_TABLE: '${self:service}-friendships-${sls:stage}',
+      DYNAMODB_FOLLOWERS_TABLE: '${self:service}-followers-${sls:stage}',
       DYNAMODB_FEEDS_TABLE: '${self:service}-feeds-${sls:stage}',
       PROFILE_PICTURES_BUCKET: '${self:service}-profile-pictures-${sls:stage}',
       POSTS_PICTURES_BUCKET: '${self:service}-posts-pictures-${sls:stage}',
@@ -114,7 +114,7 @@ const config: Serverless = {
               'dynamodb:DeleteItem',
             ],
             Resource: {
-              'Fn::GetAtt': ['FriendshipsDynamoDBTable', 'Arn'],
+              'Fn::GetAtt': ['FollowersDynamoDBTable', 'Arn'],
             },
           },
           {
@@ -442,28 +442,28 @@ const config: Serverless = {
           BillingMode: 'PAY_PER_REQUEST',
         },
       },
-      FriendshipsDynamoDBTable: {
+      FollowersDynamoDBTable: {
         Type: 'AWS::DynamoDB::Table',
         DependsOn: 'PostsDynamoDBTable',
         Properties: {
-          TableName: '${self:provider.environment.DYNAMODB_FRIENDSHIPS_TABLE}',
+          TableName: '${self:provider.environment.DYNAMODB_FOLLOWERS_TABLE}',
           AttributeDefinitions: [
             {
-              AttributeName: 'petId',
+              AttributeName: 'userId',
               AttributeType: 'S',
             },
             {
-              AttributeName: 'friendId',
+              AttributeName: 'petId',
               AttributeType: 'S',
             },
           ],
           KeySchema: [
             {
-              AttributeName: 'petId',
+              AttributeName: 'userId',
               KeyType: 'HASH',
             },
             {
-              AttributeName: 'friendId',
+              AttributeName: 'petId',
               KeyType: 'RANGE',
             },
           ],
@@ -473,11 +473,11 @@ const config: Serverless = {
               IndexName: 'inverted-index',
               KeySchema: [
                 {
-                  AttributeName: 'friendId',
+                  AttributeName: 'petId',
                   KeyType: 'HASH',
                 },
                 {
-                  AttributeName: 'petId',
+                  AttributeName: 'userId',
                   KeyType: 'RANGE',
                 },
               ],

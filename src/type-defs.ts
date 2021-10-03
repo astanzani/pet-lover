@@ -44,6 +44,11 @@ export const typeDefs = gql`
     pictures: [String!]
   }
 
+  type FollowingRelationship {
+    userId: String!
+    petId: String!
+  }
+
   type Mutation {
     addUser(props: AddUserInput!): User!
     uploadUserProfilePicture(picture: Upload!): String!
@@ -53,7 +58,7 @@ export const typeDefs = gql`
 
     addPost(props: AddPostInput!): Post!
 
-    followPet(petId: String!, friendId: String!): String!
+    followPet(petId: String!): FollowingRelationship!
   }
 
   type Query {

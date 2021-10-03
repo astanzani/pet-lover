@@ -3,7 +3,9 @@ import { FileUpload } from 'graphql-upload';
 
 import { AddPetInput, Pet, PaginatedList } from '@types';
 import { createOne, readAll, updateOne, scan } from '@db/pets';
+import { listAllFollowees } from '@services/followers';
 import { uploadFile } from '@s3';
+import { buildUserId, Filter } from '@db/utils';
 
 const PET_ID_PREFIX = 'PET#';
 const USER_ID_PREFIX = 'USER#';
@@ -63,9 +65,17 @@ export async function getSuggestedPets(
   userId: string,
   cursor?: string
 ): Promise<PaginatedList<Pet>> {
-  const pets = await scan(first, cursor, [
-    { field: 'userId', value: USER_ID_PREFIX + userId, op: '<>' },
-  ]);
+  const followees = await listAllFollowees(userId);
+
+  const filters: Filter<Pet>[] = [
+    { field: 'userId', value: buildUserId(userId), op: '<>' },
+  ];
+
+  if (followees.length > 0) {
+    filters.push({ field: 'petId', value: followees, op: 'in', not: true });
+  }
+
+  const pets = await scan(first, cursor, filters);
 
   if (pets == null) {
     throw new Error('Failed to get suggested pets');
