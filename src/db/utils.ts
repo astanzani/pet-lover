@@ -132,9 +132,9 @@ export const encodeCursor = (cursor: Cursor): string => {
   return buffer.toString('base64');
 };
 
-export const decodeCursor = (cursor: string): Cursor => {
+export function decodeCursor<T>(cursor: string): T {
   const buffer = Buffer.from(cursor, 'base64');
   const json = buffer.toString();
 
-  return JSON.parse(json);
-};
+  return JSON.parse(json) as T;
+}

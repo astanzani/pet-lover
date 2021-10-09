@@ -1,5 +1,7 @@
 import { createOne, deleteOne, readAll } from '@db/followers';
-import { FollowingRelationship } from '@types';
+import { readMany, scan } from '@db/pets';
+import { FilterBuilder } from '@db/utils';
+import { FollowingRelationship, PaginatedList, Pet } from '@types';
 
 export const follow = (userId: string, petId: string) => {
   const relationship: FollowingRelationship = {
@@ -19,7 +21,9 @@ export const unfollow = (userId: string, petId: string) => {
   return deleteOne(relationship);
 };
 
-export const listAllFollowees = async (userId: string): Promise<string[]> => {
+export const listAllFolloweesIds = async (
+  userId: string
+): Promise<string[]> => {
   const relationships = await readAll(userId);
 
   if (relationships == null) {
@@ -27,4 +31,20 @@ export const listAllFollowees = async (userId: string): Promise<string[]> => {
   }
 
   return relationships.map((relationship) => relationship.petId);
+};
+
+export const getFollowees = async (
+  userId: string,
+  first: number,
+  lastCursor?: string
+): Promise<PaginatedList<Pet>> => {
+  const allFolloweeIds = await listAllFolloweesIds(userId);
+
+  const followees = await readMany(allFolloweeIds, first, lastCursor);
+
+  if (followees == null) {
+    throw new Error(`could not get followees for user; id = ${userId}`);
+  }
+
+  return followees;
 };

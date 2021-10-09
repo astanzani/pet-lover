@@ -36,12 +36,60 @@ export async function readAll(userId: string): Promise<Pet[] | null> {
   return (result.Items as Pet[]) ?? null;
 }
 
+interface PetsTableKey {
+  petId: string;
+}
+
+export async function readMany(
+  petIds: string[],
+  first: number,
+  lastCursor?: string
+): Promise<PaginatedList<Pet> | null> {
+  const ids = petIds.sort();
+  const startKey = lastCursor
+    ? decodeCursor<PetsTableKey>(lastCursor)
+    : undefined;
+
+  const startFromIndex = ids.findIndex((id) => id === startKey?.petId);
+
+  const idsToFetch =
+    startFromIndex !== -1
+      ? ids.slice(startFromIndex + 1, startFromIndex + 1 + first)
+      : ids.slice(0, first);
+
+  const params: DynamoDB.DocumentClient.BatchGetItemInput = {
+    RequestItems: {
+      [process.env.DYNAMODB_PETS_TABLE]: {
+        Keys: idsToFetch.map((petId) => ({
+          petId,
+        })),
+      },
+    },
+  };
+
+  const db = new DynamoDB.DocumentClient();
+  const result = await db.batchGet(params).promise();
+
+  const lastFetchedId = idsToFetch[idsToFetch.length - 1];
+  const cursor =
+    lastFetchedId !== ids[length - 1]
+      ? encodeCursor({ petId: lastFetchedId })
+      : undefined;
+  const totalFound = petIds.length;
+
+  const pets = result.Responses![process.env.DYNAMODB_PETS_TABLE] as Pet[];
+
+  return { items: pets, cursor, totalFound };
+}
+
 export async function scan(
   first: number,
   lastCursor?: string,
   filter?: DbExpression
 ): Promise<PaginatedList<Pet> | null> {
-  const startKey = lastCursor ? decodeCursor(lastCursor) : undefined;
+  const startKey = lastCursor
+    ? decodeCursor<PetsTableKey>(lastCursor)
+    : undefined;
 
   const params: DynamoDB.DocumentClient.ScanInput = {
     TableName: process.env.DYNAMODB_PETS_TABLE,
@@ -62,8 +110,9 @@ export async function scan(
   const cursor = result.LastEvaluatedKey
     ? encodeCursor(result.LastEvaluatedKey)
     : undefined;
+  const totalFound = result.Count ?? 0;
 
-  return { items: pets, cursor };
+  return { items: pets, cursor, totalFound };
 }
 
 export async function updateOne(

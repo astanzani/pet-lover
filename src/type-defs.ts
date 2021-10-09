@@ -29,6 +29,7 @@ export const typeDefs = gql`
   type PaginatedPets {
     items: [Pet!]!
     cursor: String
+    totalFound: Int!
   }
 
   input AddPostInput {
@@ -65,5 +66,6 @@ export const typeDefs = gql`
     me: User!
     pets: [Pet!]!
     suggestedPets(first: Int = 10, cursor: String): PaginatedPets!
+    followees(first: Int = 10, cursor: String): PaginatedPets!
   }
 `;

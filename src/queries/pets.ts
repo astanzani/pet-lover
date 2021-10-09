@@ -11,6 +11,6 @@ export const petsQueries = {
     { first, cursor }: { first: number; cursor?: string },
     { userId }: ApolloContext
   ) {
-    return getSuggestedPets(first, idFromTokenUserId(userId), cursor);
+    return getSuggestedPets(idFromTokenUserId(userId), first, cursor);
   },
 };
