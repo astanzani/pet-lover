@@ -1,4 +1,9 @@
-import { buildUpdateExpression, FilterBuilder } from '../utils';
+import {
+  buildUpdateExpression,
+  decodeCursor,
+  encodeCursor,
+  FilterBuilder,
+} from '../utils';
 
 describe('DB utils', () => {
   describe('buildUpdateExpression()', () => {
@@ -67,6 +72,17 @@ describe('DB utils', () => {
         ':2': 'pet_1',
         ':3': 'pet_2',
       });
+    });
+  });
+
+  describe('Pagination cursor', () => {
+    it('encodes and decodes pagination cursor as base64 string', () => {
+      const cursor = { userId: 'id', name: 'name' };
+
+      const encoded = encodeCursor(cursor);
+      const decoded = decodeCursor(encoded);
+
+      expect(decoded).toEqual(cursor);
     });
   });
 });

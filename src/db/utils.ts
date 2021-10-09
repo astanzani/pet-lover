@@ -120,3 +120,21 @@ export const buildUpdateExpression = (data: UpdateData): DbExpression => {
 };
 
 export const idFromTokenUserId = (id: string) => 'USER#' + id;
+
+interface Cursor {
+  [key: string]: string;
+}
+
+export const encodeCursor = (cursor: Cursor): string => {
+  const json = JSON.stringify(cursor);
+  const buffer = Buffer.from(json);
+
+  return buffer.toString('base64');
+};
+
+export const decodeCursor = (cursor: string): Cursor => {
+  const buffer = Buffer.from(cursor, 'base64');
+  const json = buffer.toString();
+
+  return JSON.parse(json);
+};
