@@ -15,6 +15,7 @@ export default {
   },
   moduleNameMapper: {
     '@types': '<rootDir>/src/types/*',
+    '@s3': '<rootDir>/src/s3',
     '@db/(.*)$': '<rootDir>/src/db/$1',
   },
 };

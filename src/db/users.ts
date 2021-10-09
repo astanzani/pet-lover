@@ -2,12 +2,10 @@ import { DynamoDB } from 'aws-sdk';
 
 import { User } from '@types';
 
-const KEY_PREFIX = 'USER#';
-
 export async function readOne(id: string): Promise<User | null> {
   const params = {
     TableName: process.env.DYNAMODB_USERS_TABLE,
-    Key: { userId: KEY_PREFIX + id },
+    Key: { userId: id },
   };
 
   const db = new DynamoDB.DocumentClient();

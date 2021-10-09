@@ -32,8 +32,7 @@ export async function uploadProfilePicture(
   userId: string,
   picture: Promise<FileUpload>
 ) {
-  const id = USER_ID_PREFIX + userId;
-  const fileName = `users/${id}.jpg`;
+  const fileName = `users/${userId}.jpg`;
 
   const { createReadStream } = await picture;
 

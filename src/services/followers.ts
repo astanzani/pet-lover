@@ -1,12 +1,9 @@
 import { createOne, deleteOne, readAll } from '@db/followers';
-import { buildUserId } from '@db/utils';
 import { FollowingRelationship } from '@types';
 
 export const follow = (userId: string, petId: string) => {
-  const followerId = buildUserId(userId);
-
   const relationship: FollowingRelationship = {
-    userId: followerId,
+    userId,
     petId,
   };
 
@@ -14,10 +11,8 @@ export const follow = (userId: string, petId: string) => {
 };
 
 export const unfollow = (userId: string, petId: string) => {
-  const followerId = buildUserId(userId);
-
   const relationship: FollowingRelationship = {
-    userId: followerId,
+    userId,
     petId,
   };
 
@@ -25,7 +20,7 @@ export const unfollow = (userId: string, petId: string) => {
 };
 
 export const listAllFollowees = async (userId: string): Promise<string[]> => {
-  const relationships = await readAll(buildUserId(userId));
+  const relationships = await readAll(userId);
 
   if (relationships == null) {
     throw new Error(`cannot get followees for user; id = ${userId}`);

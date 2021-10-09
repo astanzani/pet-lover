@@ -2,7 +2,7 @@ import { DynamoDB } from 'aws-sdk';
 import { isEmpty } from 'lodash';
 
 import { Pet, UpdatePetInput, PaginatedList } from '@types';
-import { buildFilterExpression, buildUpateExpression, Filter } from './utils';
+import { buildUpdateExpression, DbExpression } from './utils';
 
 export async function createOne(input: Pet): Promise<Pet> {
   const params = {
@@ -34,20 +34,18 @@ export async function readAll(userId: string): Promise<Pet[] | null> {
 export async function scan(
   first: number,
   lastCursor?: string,
-  filters?: Filter<Pet>[]
+  filter?: DbExpression
 ): Promise<PaginatedList<Pet> | null> {
   const startKey = lastCursor
     ? (JSON.parse(lastCursor) as DynamoDB.Key)
     : undefined;
 
-  const filterExpression = filters ? buildFilterExpression(filters) : undefined;
-
   const params: DynamoDB.DocumentClient.ScanInput = {
     TableName: process.env.DYNAMODB_PETS_TABLE,
     Limit: first,
     ExclusiveStartKey: startKey,
-    FilterExpression: filterExpression?.expression,
-    ExpressionAttributeValues: filterExpression?.values,
+    FilterExpression: filter?.expression,
+    ExpressionAttributeValues: filter?.values,
   };
 
   const db = new DynamoDB.DocumentClient();
@@ -74,7 +72,7 @@ export async function updateOne(
     return;
   }
 
-  const { expression, values } = buildUpateExpression(attrs);
+  const { expression, values } = buildUpdateExpression(attrs);
 
   const params: DynamoDB.DocumentClient.UpdateItemInput = {
     Key: { petId: petId, userId: userId },

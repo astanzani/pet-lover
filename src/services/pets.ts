@@ -5,15 +5,14 @@ import { AddPetInput, Pet, PaginatedList } from '@types';
 import { createOne, readAll, updateOne, scan } from '@db/pets';
 import { listAllFollowees } from '@services/followers';
 import { uploadFile } from '@s3';
-import { buildUserId, Filter } from '@db/utils';
+import { FilterBuilder } from '@db/utils';
 
 const PET_ID_PREFIX = 'PET#';
-const USER_ID_PREFIX = 'USER#';
 
 export async function addPet(input: AddPetInput, userId: string): Promise<Pet> {
   const pet: Pet = {
     ...input,
-    userId: USER_ID_PREFIX + userId,
+    userId,
     petId: PET_ID_PREFIX + v4(),
   };
 
@@ -27,8 +26,7 @@ export async function addPet(input: AddPetInput, userId: string): Promise<Pet> {
 }
 
 export async function getPets(userId: string): Promise<Pet[]> {
-  const id = USER_ID_PREFIX + userId;
-  const pets = await readAll(id);
+  const pets = await readAll(userId);
 
   if (pets == null) {
     throw new Error(`Failed to get pets for user with id: ${userId}`);
@@ -55,7 +53,7 @@ export async function uploadProfilePicture(
   );
 
   // Update pet on DB with the url
-  await updateOne(petId, USER_ID_PREFIX + userId, { picture: url });
+  await updateOne(petId, userId, { picture: url });
 
   return url;
 }
@@ -67,15 +65,13 @@ export async function getSuggestedPets(
 ): Promise<PaginatedList<Pet>> {
   const followees = await listAllFollowees(userId);
 
-  const filters: Filter<Pet>[] = [
-    { field: 'userId', value: buildUserId(userId), op: '<>' },
-  ];
+  let filter = new FilterBuilder().notEqual('userId', userId);
 
   if (followees.length > 0) {
-    filters.push({ field: 'petId', value: followees, op: 'in', not: true });
+    filter = filter.and().notIn('petId', followees);
   }
 
-  const pets = await scan(first, cursor, filters);
+  const pets = await scan(first, cursor, filter.build());
 
   if (pets == null) {
     throw new Error('Failed to get suggested pets');

@@ -2,69 +2,121 @@ interface UpdateData {
   [key: string]: unknown;
 }
 
-interface DbExpression {
+interface ExpressionValues {
+  [key: string]: string;
+}
+export interface DbExpression {
   expression: string;
   values: { [key: string]: unknown };
 }
 
-export interface Filter<T> {
-  field: keyof T;
-  value: string | string[];
-  op: '=' | '<>' | '<' | '<=' | '>' | '>=' | 'in';
-  not?: boolean;
+interface BuilderConditions {
+  equal(field: string, value: string): BuilderConnectors;
+  notEqual(field: string, value: string): BuilderConnectors;
+  in(field: string, values: string[]): BuilderConnectors;
+  notIn(field: string, values: string[]): BuilderConnectors;
+  // TODO: whatever else needed, e.g., greaterThan, between, etc.
 }
 
-export const buildUpateExpression = (data: UpdateData): DbExpression => {
-  let expr = 'SET ';
-  let values: { [key: string]: unknown } = {};
+interface BuilderConnectors {
+  and(): BuilderConditions;
+  // TODO: or().
+  build(): DbExpression;
+}
 
-  for (const [key, value] of Object.entries(data)) {
-    expr += `${key} = :${key}, `;
-    values[`:${key}`] = value;
+class Builder implements BuilderConditions, BuilderConnectors {
+  private expression = '';
+  private values: ExpressionValues = {};
+  private position = 0;
+
+  public equal(field: string, value: string): BuilderConnectors {
+    const paramKey = this.getNextParamKey();
+    this.expression += `${field} = ${paramKey}`;
+    this.values[paramKey] = value;
+
+    return this;
   }
 
-  // Remove trailing comma and space
-  expr = expr.slice(0, expr.length - 2);
+  public notEqual(field: string, value: string): BuilderConnectors {
+    const paramKey = this.getNextParamKey();
+    this.expression += `${field} <> ${paramKey}`;
+    this.values[paramKey] = value;
+
+    return this;
+  }
+
+  public in(field: string, values: string[]): BuilderConnectors {
+    this.expression += `${field} IN (`;
+
+    values.forEach((value, index) => {
+      const paramKey = this.getNextParamKey();
+      this.expression += `${paramKey}`;
+      this.values[paramKey] = value;
+      if (index !== values.length - 1) {
+        this.expression += ',';
+      }
+    });
+
+    this.expression += ')';
+
+    return this;
+  }
+
+  public notIn(field: string, values: string[]): BuilderConnectors {
+    this.expression += `NOT (${field} IN (`;
+
+    values.forEach((value, index) => {
+      const paramKey = this.getNextParamKey();
+      this.expression += `${paramKey}`;
+      this.values[paramKey] = value;
+      if (index !== values.length - 1) {
+        this.expression += ',';
+      }
+    });
+
+    this.expression += '))';
+
+    return this;
+  }
+
+  public and(): BuilderConditions {
+    this.expression += ' AND ';
+
+    return this;
+  }
+
+  public build() {
+    return {
+      expression: this.expression,
+      values: this.values,
+    };
+  }
+
+  private getNextParamKey() {
+    return `:${++this.position}`;
+  }
+}
+
+export const FilterBuilder = Builder as new () => BuilderConditions;
+
+export const buildUpdateExpression = (data: UpdateData): DbExpression => {
+  let expression = 'SET ';
+  let values: { [key: string]: unknown } = {};
+  const attributesCount = Object.entries(data).length;
+
+  for (const [index, [key, value]] of Object.entries(data).entries()) {
+    const paramKey = `:${key}`;
+    expression += `${key} = ${paramKey}`;
+    values[paramKey] = value;
+    if (index !== attributesCount - 1) {
+      expression += ', ';
+    }
+  }
 
   return {
-    expression: expr,
+    expression,
     values,
   };
 };
 
-export function buildFilterExpression<T>(filters: Filter<T>[]): DbExpression {
-  let expr = '';
-  let values: { [key: string]: string } = {};
-
-  for (const filter of filters) {
-    const isListFilter = Array.isArray(filter.value);
-    const { field, value, op, not } = filter;
-    expr += isListFilter
-      ? `${not ? 'not ' : ''}(${field} ${op} (${(value as string[])
-          .map((_v, i) => `:${field}_${i}`)
-          .join()})) and `
-      : `${field} ${op} :${field} and `;
-    if (isListFilter) {
-      (value as string[]).forEach((v, i) => {
-        values[`:${field}_${i}`] = v;
-      });
-    } else {
-      values[`:${field}`] = value as string;
-    }
-  }
-
-  // Remove trailing comma and space
-  expr = expr.slice(0, expr.length - 5);
-
-  console.log('FILTER EXPRESSION: ', expr);
-  console.log('FILTER VALUES: ', values);
-
-  return {
-    expression: expr,
-    values,
-  };
-}
-
-export const buildUserId = (id: string) => 'USER#' + id;
-export const buildPetId = (id: string) => 'PET#' + id;
-export const buildPostId = (id: string) => 'POST#' + id;
+export const idFromTokenUserId = (id: string) => 'USER#' + id;
