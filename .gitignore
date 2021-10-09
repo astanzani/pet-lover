@@ -4,4 +4,4 @@
 .dynamodb
 .webpack
 .vscode
-coverage
+/coverage
