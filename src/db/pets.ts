@@ -41,27 +41,30 @@ interface PetsTableKey {
 }
 
 export async function readMany(
-  petIds: string[],
+  keys: { petId: string; userId: string }[],
   first: number,
   lastCursor?: string
 ): Promise<PaginatedList<Pet> | null> {
-  const ids = petIds.sort();
+  const sortedKeys = keys.sort((a, b) => a.petId.localeCompare(b.petId));
   const startKey = lastCursor
     ? decodeCursor<PetsTableKey>(lastCursor)
     : undefined;
 
-  const startFromIndex = ids.findIndex((id) => id === startKey?.petId);
+  const startFromIndex = sortedKeys.findIndex(
+    (key) => key.petId === startKey?.petId
+  );
 
-  const idsToFetch =
+  const keysToFetch =
     startFromIndex !== -1
-      ? ids.slice(startFromIndex + 1, startFromIndex + 1 + first)
-      : ids.slice(0, first);
+      ? sortedKeys.slice(startFromIndex + 1, startFromIndex + 1 + first)
+      : sortedKeys.slice(0, first);
 
   const params: DynamoDB.DocumentClient.BatchGetItemInput = {
     RequestItems: {
       [process.env.DYNAMODB_PETS_TABLE]: {
-        Keys: idsToFetch.map((petId) => ({
-          petId,
+        Keys: keysToFetch.map((key) => ({
+          userId: key.userId,
+          petId: key.petId,
         })),
       },
     },
@@ -70,12 +73,15 @@ export async function readMany(
   const db = new DynamoDB.DocumentClient();
   const result = await db.batchGet(params).promise();
 
-  const lastFetchedId = idsToFetch[idsToFetch.length - 1];
+  const lastFetchedId = keysToFetch[keysToFetch.length - 1];
   const cursor =
-    lastFetchedId !== ids[length - 1]
-      ? encodeCursor({ petId: lastFetchedId })
+    lastFetchedId.petId !== sortedKeys[sortedKeys.length - 1].petId
+      ? encodeCursor({
+          petId: lastFetchedId.petId,
+          userId: lastFetchedId.userId,
+        })
       : undefined;
-  const totalFound = petIds.length;
+  const totalFound = keys.length;
 
   const pets = result.Responses![process.env.DYNAMODB_PETS_TABLE] as Pet[];
 
@@ -93,7 +99,6 @@ export async function scan(
 
   const params: DynamoDB.DocumentClient.ScanInput = {
     TableName: process.env.DYNAMODB_PETS_TABLE,
-    Limit: first,
     ExclusiveStartKey: startKey,
     FilterExpression: filter?.expression,
     ExpressionAttributeValues: filter?.values,
@@ -106,10 +111,12 @@ export async function scan(
     return null;
   }
 
-  const pets = result.Items as Pet[];
-  const cursor = result.LastEvaluatedKey
-    ? encodeCursor(result.LastEvaluatedKey)
-    : undefined;
+  const pets = result.Items.slice(0, first) as Pet[];
+  const lastPet = result.Items[result.Items.length - 1];
+  const cursor =
+    pets.length === first
+      ? encodeCursor({ userId: lastPet.userId, petId: lastPet.petId })
+      : undefined;
   const totalFound = result.Count ?? 0;
 
   return { items: pets, cursor, totalFound };

@@ -59,7 +59,8 @@ export const typeDefs = gql`
 
     addPost(props: AddPostInput!): Post!
 
-    followPet(petId: String!): FollowingRelationship!
+    followPet(petId: String!, ownerId: String!): FollowingRelationship!
+    unfollowPet(petId: String!, ownerId: String!): FollowingRelationship!
   }
 
   type Query {

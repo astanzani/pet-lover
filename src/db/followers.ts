@@ -10,6 +10,7 @@ export const createOne = async (
     Item: {
       userId: input.userId,
       petId: input.petId,
+      ownerId: input.ownerId,
     },
   };
 

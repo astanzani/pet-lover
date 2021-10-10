@@ -1,36 +1,37 @@
 import { createOne, deleteOne, readAll } from '@db/followers';
 import { readMany, scan } from '@db/pets';
-import { FilterBuilder } from '@db/utils';
 import { FollowingRelationship, PaginatedList, Pet } from '@types';
 
-export const follow = (userId: string, petId: string) => {
+export const follow = (userId: string, petId: string, ownerId: string) => {
   const relationship: FollowingRelationship = {
     userId,
     petId,
+    ownerId,
   };
 
   return createOne(relationship);
 };
 
-export const unfollow = (userId: string, petId: string) => {
+export const unfollow = (userId: string, petId: string, ownerId: string) => {
   const relationship: FollowingRelationship = {
     userId,
     petId,
+    ownerId,
   };
 
   return deleteOne(relationship);
 };
 
-export const listAllFolloweesIds = async (
+export const listAllFollowingRelationships = async (
   userId: string
-): Promise<string[]> => {
+): Promise<FollowingRelationship[]> => {
   const relationships = await readAll(userId);
 
   if (relationships == null) {
     throw new Error(`cannot get followees for user; id = ${userId}`);
   }
 
-  return relationships.map((relationship) => relationship.petId);
+  return relationships;
 };
 
 export const getFollowees = async (
@@ -38,9 +39,13 @@ export const getFollowees = async (
   first: number,
   lastCursor?: string
 ): Promise<PaginatedList<Pet>> => {
-  const allFolloweeIds = await listAllFolloweesIds(userId);
+  const allFolloweeIds = await listAllFollowingRelationships(userId);
 
-  const followees = await readMany(allFolloweeIds, first, lastCursor);
+  const followees = await readMany(
+    allFolloweeIds.map((r) => ({ petId: r.petId, userId: r.ownerId })),
+    first,
+    lastCursor
+  );
 
   if (followees == null) {
     throw new Error(`could not get followees for user; id = ${userId}`);

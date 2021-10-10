@@ -3,7 +3,7 @@ import { FileUpload } from 'graphql-upload';
 
 import { AddPetInput, Pet, PaginatedList } from '@types';
 import { createOne, readAll, updateOne, scan } from '@db/pets';
-import { listAllFolloweesIds } from '@services/followers';
+import { listAllFollowingRelationships } from '@services/followers';
 import { uploadFile } from '@s3';
 import { FilterBuilder } from '@db/utils';
 
@@ -63,7 +63,9 @@ export async function getSuggestedPets(
   first: number,
   cursor?: string
 ): Promise<PaginatedList<Pet>> {
-  const followees = await listAllFolloweesIds(userId);
+  const followees = (await listAllFollowingRelationships(userId)).map(
+    (r) => r.petId
+  );
 
   let filter = new FilterBuilder().notEqual('userId', userId);
 
