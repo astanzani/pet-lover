@@ -15,6 +15,7 @@ export function FindPetsToFollow() {
 
   const { data, loading, error, fetchMore } = useGetSuggestedPetsQuery({
     variables: { first: 15 },
+    fetchPolicy: 'no-cache',
   });
 
   if (loading) {

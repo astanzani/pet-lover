@@ -1,23 +1,11 @@
 import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Feed, More } from '@screens';
 import { Routes } from '@config';
-import { Button } from '@components';
 import { PetsStack } from '../Pets';
 import { NewPostStack } from '../NewPost';
-
-function AnotherTabScreen() {
-  return (
-    <SafeAreaView
-      focusable={true}
-      style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-    >
-      <Button>Another</Button>
-    </SafeAreaView>
-  );
-}
+import { ProfileStack } from '../Profile';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -35,9 +23,9 @@ export function HomeStack() {
         options={{ tabBarIcon: 'image-plus', title: 'New Post' }}
       />
       <Tab.Screen
-        name="Settings"
-        component={AnotherTabScreen}
-        options={{ tabBarIcon: 'account-group' }}
+        name={Routes.PROFILE_STACK}
+        component={ProfileStack}
+        options={{ tabBarIcon: 'account', title: 'Profile' }}
       />
       <Tab.Screen
         name={Routes.PETS_STACK}

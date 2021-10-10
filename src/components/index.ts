@@ -5,4 +5,5 @@ export * from './PostCard';
 export * from './FilePickerDialog';
 export * from './ImageGallery';
 export * from './Avatar';
+export * from './AvatarGroup';
 export * from './PaginatedList';

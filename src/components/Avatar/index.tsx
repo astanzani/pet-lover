@@ -2,26 +2,33 @@ import React from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
 import { Avatar as PaperAvatar } from 'react-native-paper';
 
-interface Props {
+export interface Props {
   picture?: string;
   fallbackIcon?: string;
   fallbackName?: string;
   styles?: StyleProp<ViewStyle>;
+  size?: number;
 }
 
-export function Avatar({ picture, fallbackIcon, fallbackName, styles }: Props) {
+export function Avatar({
+  picture,
+  fallbackIcon,
+  fallbackName,
+  size = 50,
+  styles,
+}: Props) {
   const icon = fallbackIcon ?? 'account';
 
   return picture ? (
-    <PaperAvatar.Image size={50} source={{ uri: picture }} style={styles} />
+    <PaperAvatar.Image size={size} source={{ uri: picture }} style={styles} />
   ) : fallbackName ? (
     <PaperAvatar.Text
-      size={50}
+      size={size}
       label={getInitials(fallbackName)}
       style={styles}
     />
   ) : (
-    <PaperAvatar.Icon size={50} icon={icon} style={styles} />
+    <PaperAvatar.Icon size={size} icon={icon} style={styles} />
   );
 }
 

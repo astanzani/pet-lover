@@ -40,7 +40,16 @@ export const apolloConfig: ApolloClientOptions<NormalizedCacheObject> = {
           suggestedPets: {
             keyArgs: false,
             merge(
-              existing: PaginatedList<Reference> = { items: [] },
+              existing: PaginatedList<Reference> = { items: [], totalFound: 0 },
+              incoming: PaginatedList<Reference>
+            ) {
+              return merge(existing, incoming);
+            },
+          },
+          followees: {
+            keyArgs: false,
+            merge(
+              existing: PaginatedList<Reference> = { items: [], totalFound: 0 },
               incoming: PaginatedList<Reference>
             ) {
               return merge(existing, incoming);
@@ -59,5 +68,6 @@ const merge = (
   return {
     cursor: incoming.cursor,
     items: [...existing.items, ...incoming.items],
+    totalFound: incoming.totalFound,
   };
 };

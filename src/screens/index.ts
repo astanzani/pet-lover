@@ -7,3 +7,5 @@ export * from './NewPost';
 export * from './Pets';
 export * from './NewPet';
 export * from './FindPetsToFollow';
+export * from './Profile';
+export * from './Following';

@@ -15,4 +15,8 @@ export enum Routes {
 
   NEW_POST_STACK = 'NewPostStack',
   NEW_POST = 'NewPost',
+
+  PROFILE_STACK = 'ProfileStack',
+  PROFILE = 'Profile',
+  FOLLOWING = 'Following',
 }

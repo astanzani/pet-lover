@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, QueryHookOptions } from '@apollo/client';
 
 import { PaginatedList, Pet } from '@types';
 
@@ -31,11 +31,14 @@ export const GET_SUGGESTED_PETS = gql`
   }
 `;
 
-export function useGetSuggestedPetsQuery(opts?: {
-  variables: { first?: number; cursor?: string };
-}) {
+export function useGetSuggestedPetsQuery(
+  opts?: QueryHookOptions<
+    { suggestedPets: PaginatedList<Pet> },
+    { first?: number; cursor?: string }
+  >
+) {
   return useQuery<
     { suggestedPets: PaginatedList<Pet> },
     { first?: number; cursor?: string }
-  >(GET_SUGGESTED_PETS, { variables: opts?.variables });
+  >(GET_SUGGESTED_PETS, opts);
 }
