@@ -100,6 +100,7 @@ const config: Serverless = {
               'dynamodb:Scan',
               'dynamodb:GetItem',
               'dynamodb:BatchGetItem',
+              'dynamodb:BatchWriteItem',
               'dynamodb:PutItem',
               'dynamodb:UpdateItem',
               'dynamodb:DeleteItem',
@@ -122,6 +123,12 @@ const config: Serverless = {
             Resource: {
               'Fn::GetAtt': ['FollowersDynamoDBTable', 'Arn'],
             },
+          },
+          {
+            Effect: 'Allow',
+            Action: ['dynamodb:Query', 'dynamodb:Scan'],
+            Resource:
+              'arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_FOLLOWERS_TABLE}/index/*',
           },
           {
             Effect: 'Allow',

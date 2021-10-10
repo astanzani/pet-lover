@@ -3,6 +3,8 @@ import { FileUpload } from 'graphql-upload';
 
 import { createOne } from '@db/posts';
 import { uploadFile } from '@s3';
+import { listAllFollowedRelationships } from '@services/followers';
+import { addPostToFeeds } from '@services/feed';
 import { AddPostInput, Post } from '@types';
 
 const POST_ID_PREFIX = 'POST#';
@@ -40,6 +42,13 @@ export async function addPost(input: AddPostInput): Promise<Post> {
   };
 
   const addedPost = await createOne(post);
+
+  const followers = await listAllFollowedRelationships(input.petId);
+
+  await addPostToFeeds(
+    followers.map((follower) => follower.userId),
+    addedPost.postId
+  );
 
   return addedPost;
 }

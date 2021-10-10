@@ -26,11 +26,13 @@ module.exports = {
       '@db/users': path.resolve(__dirname, './src/db/users'),
       '@db/pets': path.resolve(__dirname, './src/db/pets'),
       '@db/posts': path.resolve(__dirname, './src/db/posts'),
+      '@db/feed': path.resolve(__dirname, './src/db/feed'),
       '@db/followers': path.resolve(__dirname, './src/db/followers'),
       '@db/utils': path.resolve(__dirname, './src/db/utils'),
       '@services/users': path.resolve(__dirname, './src/services/users'),
       '@services/pets': path.resolve(__dirname, './src/services/pets'),
       '@services/posts': path.resolve(__dirname, './src/services/posts'),
+      '@services/feed': path.resolve(__dirname, './src/services/feed'),
       '@services/followers': path.resolve(
         __dirname,
         './src/services/followers'

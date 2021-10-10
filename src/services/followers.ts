@@ -1,6 +1,7 @@
 import { createOne, deleteOne, readAll } from '@db/followers';
 import { readMany, scan } from '@db/pets';
 import { FollowingRelationship, PaginatedList, Pet } from '@types';
+import { User } from 'aws-sdk/clients/budgets';
 
 export const follow = (userId: string, petId: string, ownerId: string) => {
   const relationship: FollowingRelationship = {
@@ -29,6 +30,18 @@ export const listAllFollowingRelationships = async (
 
   if (relationships == null) {
     throw new Error(`cannot get followees for user; id = ${userId}`);
+  }
+
+  return relationships;
+};
+
+export const listAllFollowedRelationships = async (
+  petId: string
+): Promise<FollowingRelationship[]> => {
+  const relationships = await readAll(petId, true);
+
+  if (relationships == null) {
+    throw new Error(`cannot get followers for pet; id = ${petId}`);
   }
 
   return relationships;

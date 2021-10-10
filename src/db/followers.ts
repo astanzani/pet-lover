@@ -38,14 +38,18 @@ export const deleteOne = async (
 };
 
 export async function readAll(
-  userId: string
+  id: string,
+  invertedIndex = false
 ): Promise<FollowingRelationship[] | null> {
+  const keyName = invertedIndex ? 'petId' : 'userId';
+
   const params: DynamoDB.DocumentClient.QueryInput = {
     TableName: process.env.DYNAMODB_FOLLOWERS_TABLE,
+    KeyConditionExpression: `${keyName} = :v1`,
     ExpressionAttributeValues: {
-      ':v1': userId,
+      ':v1': id,
     },
-    KeyConditionExpression: 'userId = :v1',
+    IndexName: invertedIndex ? 'inverted-index' : undefined,
   };
 
   const db = new DynamoDB.DocumentClient();
