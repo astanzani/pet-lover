@@ -1,5 +1,6 @@
 import { GraphQLUpload } from 'graphql-upload';
 
+import { Resolvers } from '@generated/graphql';
 import { usersQueries, petsQueries, followersQueries } from './queries';
 import {
   usersMutations,
@@ -8,7 +9,7 @@ import {
   followersMutations,
 } from './mutations';
 
-export const resolvers = {
+export const resolvers: Resolvers = {
   Upload: GraphQLUpload,
   Query: {
     ...usersQueries,

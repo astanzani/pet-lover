@@ -1,6 +1,6 @@
 import { DynamoDB } from 'aws-sdk';
 
-import { Post } from '@types';
+import { Post } from '@generated/graphql';
 
 export async function createOne(input: Post): Promise<Post> {
   const params: DynamoDB.DocumentClient.PutItemInput = {

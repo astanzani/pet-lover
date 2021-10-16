@@ -1,7 +1,11 @@
 import { createOne, deleteOne, readAll } from '@db/followers';
-import { readMany, scan } from '@db/pets';
-import { FollowingRelationship, PaginatedList, Pet } from '@types';
-import { User } from 'aws-sdk/clients/budgets';
+import { readMany } from '@db/pets';
+import {
+  PaginatedPets,
+  Pet,
+  FollowingRelationship,
+  Maybe,
+} from '@generated/graphql';
 
 export const follow = (userId: string, petId: string, ownerId: string) => {
   const relationship: FollowingRelationship = {
@@ -50,8 +54,8 @@ export const listAllFollowedRelationships = async (
 export const getFollowees = async (
   userId: string,
   first: number,
-  lastCursor?: string
-): Promise<PaginatedList<Pet>> => {
+  lastCursor?: Maybe<string>
+): Promise<PaginatedPets> => {
   const allFolloweeIds = await listAllFollowingRelationships(userId);
 
   const followees = await readMany(

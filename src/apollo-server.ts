@@ -10,7 +10,7 @@ const apolloServer = new ApolloServer({
   resolvers,
   typeDefs,
   context({ event }) {
-    const userId =
+    const userId: string =
       event?.requestContext?.authorizer?.claims?.['cognito:username'];
     return { userId };
   },

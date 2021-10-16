@@ -1,6 +1,6 @@
 import { DynamoDB } from 'aws-sdk';
 
-import { User } from '@types';
+import { User } from '@generated/graphql';
 
 export async function readOne(id: string): Promise<User | null> {
   const params = {

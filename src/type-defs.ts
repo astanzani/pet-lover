@@ -19,6 +19,11 @@ export const typeDefs = gql`
     picture: String
   }
 
+  input UpdatePetInput {
+    name: String
+    picture: String
+  }
+
   type Pet {
     petId: String!
     userId: String!
@@ -48,6 +53,7 @@ export const typeDefs = gql`
   type FollowingRelationship {
     userId: String!
     petId: String!
+    ownerId: String!
   }
 
   type Mutation {
@@ -68,10 +74,5 @@ export const typeDefs = gql`
     pets: [Pet!]!
     suggestedPets(first: Int = 10, cursor: String): PaginatedPets!
     followees(first: Int = 10, cursor: String): PaginatedPets!
-  }
-
-  schema {
-    query: Query
-    mutation: Mutation
   }
 `;

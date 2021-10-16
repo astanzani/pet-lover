@@ -23,6 +23,7 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js'],
     alias: {
+      graphql$: path.resolve(__dirname, '../../node_modules/graphql/index.js'),
       '@db/users': path.resolve(__dirname, './src/db/users'),
       '@db/pets': path.resolve(__dirname, './src/db/pets'),
       '@db/posts': path.resolve(__dirname, './src/db/posts'),
@@ -39,6 +40,7 @@ module.exports = {
       ),
       '@types': path.resolve(__dirname, './src/types'),
       '@s3': path.resolve(__dirname, './src/s3'),
+      '@generated/graphql': path.resolve(__dirname, './src/generated/graphql'),
     },
   },
   target: 'node',

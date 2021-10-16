@@ -1,19 +1,16 @@
 import { FileUpload } from 'graphql-upload';
 
 import { addPet, uploadProfilePicture } from '@services/pets';
-import { AddPetInput, ApolloContext } from '@types';
+import { ApolloContext } from '@types';
 import { idFromTokenUserId } from '@db/utils';
+import { Resolvers } from '@generated/graphql';
 
-export const petsMutations = {
-  addPet(
-    _parent: any,
-    { props }: { props: AddPetInput },
-    { userId }: ApolloContext
-  ) {
+export const petsMutations: Resolvers<ApolloContext>['Mutation'] = {
+  addPet(_parent, { props }, { userId }) {
     return addPet(props, idFromTokenUserId(userId));
   },
   uploadPetProfilePicture(
-    _parent: any,
+    _parent,
     { petId, picture }: { petId: string; picture: Promise<FileUpload> },
     { userId }: ApolloContext
   ) {

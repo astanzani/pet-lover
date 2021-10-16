@@ -1,20 +1,13 @@
 import { idFromTokenUserId } from '@db/utils';
+import { Resolvers } from '@generated/graphql';
 import { follow, unfollow } from '@services/followers';
 import { ApolloContext } from '@types';
 
-export const followersMutations = {
-  followPet(
-    _parent: any,
-    { petId, ownerId }: { petId: string; ownerId: string },
-    { userId }: ApolloContext
-  ) {
+export const followersMutations: Resolvers<ApolloContext>['Mutation'] = {
+  followPet(_parent, { petId, ownerId }, { userId }: ApolloContext) {
     return follow(idFromTokenUserId(userId), petId, ownerId);
   },
-  unfollowPet(
-    _parent: any,
-    { petId, ownerId }: { petId: string; ownerId: string },
-    { userId }: ApolloContext
-  ) {
+  unfollowPet(_parent, { petId, ownerId }, { userId }: ApolloContext) {
     return unfollow(idFromTokenUserId(userId), petId, ownerId);
   },
 };

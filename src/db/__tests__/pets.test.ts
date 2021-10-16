@@ -1,6 +1,7 @@
+import { encodeCursor } from '@db/utils';
 import { DynamoDB } from 'aws-sdk';
 
-import { Pet } from '@types';
+import { Pet } from '@generated/graphql';
 import * as dbOps from '../pets';
 
 describe('Pets DB operations', () => {
@@ -80,13 +81,12 @@ describe('Pets DB operations', () => {
 
     await dbOps.scan(2);
 
-    expect(scan).toHaveBeenCalledWith(expect.objectContaining({ Limit: 2 }));
+    expect(scan).toHaveBeenCalled();
 
-    await dbOps.scan(2, JSON.stringify({ userId: 'USER#1', petId: 'PET#2' }));
+    await dbOps.scan(2, encodeCursor({ userId: 'USER#1', petId: 'PET#2' }));
 
     expect(scan).toHaveBeenCalledWith(
       expect.objectContaining({
-        Limit: 2,
         ExclusiveStartKey: { userId: 'USER#1', petId: 'PET#2' },
       })
     );

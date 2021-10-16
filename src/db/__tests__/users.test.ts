@@ -1,6 +1,6 @@
 import { DynamoDB } from 'aws-sdk';
 
-import { User } from '@types';
+import { User } from '@generated/graphql';
 import * as dbOps from '../users';
 
 describe('Users DB operations', () => {

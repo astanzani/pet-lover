@@ -5,7 +5,7 @@ import { createOne } from '@db/posts';
 import { uploadFile } from '@s3';
 import { listAllFollowedRelationships } from '@services/followers';
 import { addPostToFeeds } from '@services/feed';
-import { AddPostInput, Post } from '@types';
+import { AddPostInput, Post } from '@generated/graphql';
 
 const POST_ID_PREFIX = 'POST#';
 

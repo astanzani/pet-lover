@@ -1,8 +1,9 @@
+import { Resolvers } from '@generated/graphql';
 import { addPost } from '@services/posts';
-import { AddPostInput } from '@types';
+import { ApolloContext, AddPostInput } from '@types';
 
-export const postsMutations = {
-  addPost(_parent: any, { props }: { props: AddPostInput }) {
+export const postsMutations: Resolvers<ApolloContext>['Mutation'] = {
+  addPost(_parent, { props }) {
     return addPost(props);
   },
 };

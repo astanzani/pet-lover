@@ -1,6 +1,6 @@
 import * as service from '../users';
 import * as db from '@db/users';
-import { User } from '@types';
+import { User } from '@generated/graphql';
 
 describe('Users service', () => {
   it('gets an user profile', async () => {

@@ -1,6 +1,6 @@
 import { DynamoDB } from 'aws-sdk';
 
-import { FollowingRelationship } from '@types';
+import { FollowingRelationship } from '@generated/graphql';
 
 export const createOne = async (
   input: FollowingRelationship

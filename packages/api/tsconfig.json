@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "paths": {
+      "@db/*": ["./src/db/*"],
+      "@services/*": ["./src/services/*"],
+      "@types": ["./src/types"],
+      "@s3": ["./src/s3"],
+      "@generated/graphql": ["./src/generated/graphql"]
+    }
+  },
+  "exclude": ["node_modules"],
+  "include": ["src/**/*.ts"]
+}

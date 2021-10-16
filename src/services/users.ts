@@ -3,7 +3,7 @@ import { FileUpload } from 'graphql-upload';
 
 import { uploadFile } from '@s3';
 import { createOne, readOne } from '@db/users';
-import { AddUserInput, User } from '@types';
+import { AddUserInput, User } from '@generated/graphql';
 
 const USER_ID_PREFIX = 'USER#';
 

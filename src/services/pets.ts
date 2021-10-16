@@ -1,11 +1,12 @@
 import { v4 } from 'uuid';
 import { FileUpload } from 'graphql-upload';
 
-import { AddPetInput, Pet, PaginatedList } from '@types';
+import { AddPetInput, Pet, PaginatedPets } from '@generated/graphql';
 import { createOne, readAll, updateOne, scan } from '@db/pets';
 import { listAllFollowingRelationships } from '@services/followers';
 import { uploadFile } from '@s3';
 import { FilterBuilder } from '@db/utils';
+import { Maybe } from '@generated/graphql';
 
 const PET_ID_PREFIX = 'PET#';
 
@@ -61,8 +62,8 @@ export async function uploadProfilePicture(
 export async function getSuggestedPets(
   userId: string,
   first: number,
-  cursor?: string
-): Promise<PaginatedList<Pet>> {
+  cursor?: Maybe<string>
+): Promise<PaginatedPets> {
   const followees = (await listAllFollowingRelationships(userId)).map(
     (r) => r.petId
   );

@@ -1,7 +1,9 @@
+import { Maybe } from '@generated/graphql';
 import { DynamoDB } from 'aws-sdk';
 import { isEmpty } from 'lodash';
 
-import { Pet, UpdatePetInput, PaginatedList } from '@types';
+import { Pet, UpdatePetInput } from '@generated/graphql';
+import { PaginatedList } from '@types';
 import {
   buildUpdateExpression,
   DbExpression,
@@ -43,7 +45,7 @@ interface PetsTableKey {
 export async function readMany(
   keys: { petId: string; userId: string }[],
   first: number,
-  lastCursor?: string
+  lastCursor?: Maybe<string>
 ): Promise<PaginatedList<Pet> | null> {
   const sortedKeys = keys.sort((a, b) => a.petId.localeCompare(b.petId));
   const startKey = lastCursor
@@ -90,7 +92,7 @@ export async function readMany(
 
 export async function scan(
   first: number,
-  lastCursor?: string,
+  lastCursor?: Maybe<string>,
   filter?: DbExpression
 ): Promise<PaginatedList<Pet> | null> {
   const startKey = lastCursor
