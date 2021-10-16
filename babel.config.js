@@ -17,6 +17,7 @@ module.exports = function (api) {
             '@types': './src/types',
             '@graphql/mutations': './src/graphql/mutations',
             '@graphql/queries': './src/graphql/queries',
+            '@generated/graphql': './src/generated/graphql',
           },
           extensions: [
             '.ios.js',

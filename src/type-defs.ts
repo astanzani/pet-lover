@@ -69,4 +69,9 @@ export const typeDefs = gql`
     suggestedPets(first: Int = 10, cursor: String): PaginatedPets!
     followees(first: Int = 10, cursor: String): PaginatedPets!
   }
+
+  schema {
+    query: Query
+    mutation: Mutation
+  }
 `;

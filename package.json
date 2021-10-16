@@ -5,11 +5,20 @@
   "author": "Arnaldo Stanzani <arnaldo.stanzani@gmail.com>",
   "license": "MIT",
   "private": true,
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
+    "@graphql-codegen/cli": "2.2.1",
+    "@graphql-codegen/introspection": "2.1.0",
+    "@graphql-codegen/typescript": "2.2.4",
+    "@graphql-codegen/typescript-operations": "^2.1.8",
+    "@graphql-codegen/typescript-react-apollo": "3.1.6",
+    "@graphql-codegen/typescript-resolvers": "2.3.2",
     "lerna": "^4.0.0"
   },
   "scripts": {
-    "postinstall":"cd ./packages/mobile && expo-yarn-workspaces postinstall"
+    "postinstall": "yarn codegen && cd ./packages/mobile && expo-yarn-workspaces postinstall",
+    "codegen": "graphql-codegen --config codegen.yml"
   }
 }

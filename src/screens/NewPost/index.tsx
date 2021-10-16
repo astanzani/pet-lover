@@ -5,9 +5,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { ReactNativeFile } from 'apollo-upload-client';
 import { NavigationProp } from '@react-navigation/core';
 
-import { useGetPetsQuery } from '@graphql/queries';
-import { useAddPostMutation } from '@graphql/mutations';
-import { Button, FilePickerDialog, ImageGallery } from '@components';
+import { useGetPetsQuery, useAddPostMutation } from '@generated/graphql';
+import { Button, FilePickerDialog, ImageGallery } from '../../components';
 import { PetPicker } from './PetPicker';
 import { PostsStackParamList } from '@types';
 import getStyles from './styles';

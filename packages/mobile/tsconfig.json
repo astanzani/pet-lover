@@ -10,7 +10,8 @@
       "@config": ["./src/config"],
       "@types": ["./src/types"],
       "@graphql/mutations": ["./src/graphql/mutations"],
-      "@graphql/queries": ["./src/graphql/queries"]
+      "@graphql/queries": ["./src/graphql/queries"],
+      "@generated/graphql": ["./src/generated/graphql"]
     }
   }
 }

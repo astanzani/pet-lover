@@ -3,7 +3,7 @@ import { StyleProp, ViewStyle } from 'react-native';
 import { Avatar as PaperAvatar } from 'react-native-paper';
 
 export interface Props {
-  picture?: string;
+  picture?: string | null;
   fallbackIcon?: string;
   fallbackName?: string;
   styles?: StyleProp<ViewStyle>;

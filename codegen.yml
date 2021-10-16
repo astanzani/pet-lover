@@ -1,0 +1,10 @@
+overwrite: true
+schema: './packages/api/src/type-defs.ts'
+documents: './packages/mobile/src/**/*.graphql'
+generates:
+  ./packages/mobile/src/generated/graphql.tsx:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-resolvers'
+      - 'typescript-react-apollo'

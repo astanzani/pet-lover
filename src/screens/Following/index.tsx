@@ -2,9 +2,8 @@ import React from 'react';
 import { View } from 'react-native';
 import { ActivityIndicator, Text, Title, useTheme } from 'react-native-paper';
 
-import { useGetFolloweesQuery } from '@graphql/queries';
-import { PaginatedList } from '@components';
-import { Pet } from '@types';
+import { useGetFolloweesQuery, Pet } from '@generated/graphql';
+import { PaginatedList } from '../../components';
 import { UnfollowPetCard } from './UnfollowPetCard';
 import getStyles from './styles';
 

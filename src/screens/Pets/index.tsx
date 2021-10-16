@@ -3,9 +3,9 @@ import { NavigationProp } from '@react-navigation/native';
 import { View, ScrollView } from 'react-native';
 import { Title, Subheading, useTheme, FAB, Avatar } from 'react-native-paper';
 
-import { useGetPetsQuery } from '@graphql/queries';
-import { PetsStackParamList } from '@types';
-import { Routes } from '@config';
+import { useGetPetsQuery } from '@generated/graphql';
+import { PetsStackParamList } from '../../types';
+import { Routes } from '../../config';
 import getStyles from './styles';
 
 interface Props {

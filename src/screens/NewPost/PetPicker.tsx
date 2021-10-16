@@ -1,5 +1,4 @@
 import React, { useRef } from 'react';
-import { View } from 'react-native';
 import {
   Avatar,
   IconButton,
@@ -14,7 +13,7 @@ import {
   BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
 
-import { Pet } from '@types';
+import { Pet } from '@generated/graphql';
 import getStyles from './styles';
 
 interface Props {

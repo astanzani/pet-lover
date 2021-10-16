@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { View } from 'react-native';
 import { Title, useTheme } from 'react-native-paper';
 
-import { Pet } from '@types';
-import { Avatar, Button } from '@components';
-import { useFollowPetMutation } from '@graphql/mutations';
+import {
+  Pet,
+  GetFolloweesDocument,
+  GetProfileDocument,
+  useFollowPetMutation,
+} from '@generated/graphql';
+import { Avatar, Button } from '../../components';
 import getStyles from './styles';
-import { GET_FOLLOWEES, GET_PROFILE } from '@graphql/queries';
 
 interface Props {
   pet: Pet;
@@ -21,7 +24,7 @@ export function FollowPetCard({ pet }: Props) {
   const handleFollowPress = async () => {
     const { errors } = await followPet({
       variables: { petId: pet.petId, ownerId: pet.userId },
-      refetchQueries: [GET_FOLLOWEES, GET_PROFILE],
+      refetchQueries: [GetFolloweesDocument, GetProfileDocument],
     });
     if (!errors) {
       setFollowing(true);

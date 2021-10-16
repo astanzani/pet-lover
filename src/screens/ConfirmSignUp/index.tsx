@@ -11,10 +11,10 @@ import {
 import { Auth } from '@aws-amplify/auth';
 import { RouteProp } from '@react-navigation/native';
 
-import { Button } from '@components';
-import { SignInStackParamList } from '@types';
-import { useAddUserMutation } from '@graphql/mutations';
-import { Routes } from '@config';
+import { useAddUserMutation } from '@generated/graphql';
+import { Button } from '../../components';
+import { SignInStackParamList } from '../../types';
+import { Routes } from '../../config';
 import getStyles from './styles';
 
 interface Props {
@@ -50,7 +50,9 @@ export function ConfirmSignUp({ navigation, route }: Props) {
         variables: { props: { email, name } },
       });
     } catch (e) {
-      setError(e.message);
+      if (e instanceof Error) {
+        setError(e.message);
+      }
       setLoading(false);
     }
   };

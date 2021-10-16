@@ -1,0 +1,47 @@
+mutation addUser($props: AddUserInput!) {
+  addUser(props: $props) {
+    userId
+    name
+    email
+  }
+}
+
+mutation uploadUserProfilePicture($picture: Upload!) {
+  uploadUserProfilePicture(picture: $picture)
+}
+
+mutation addPost($props: AddPostInput!) {
+  addPost(props: $props) {
+    postId
+    petId
+    text
+    pictures
+  }
+}
+
+mutation addPet($props: AddPetInput!) {
+  addPet(props: $props) {
+    petId
+    userId
+    name
+    picture
+  }
+}
+
+mutation uploadPetProfilePicture($petId: String!, $picture: Upload!) {
+  uploadPetProfilePicture(petId: $petId, picture: $picture)
+}
+
+mutation followPet($petId: String!, $ownerId: String!) {
+  followPet(petId: $petId, ownerId: $ownerId) {
+    userId
+    petId
+  }
+}
+
+mutation unfollowPet($petId: String!, $ownerId: String!) {
+  unfollowPet(petId: $petId, ownerId: $ownerId) {
+    userId
+    petId
+  }
+}

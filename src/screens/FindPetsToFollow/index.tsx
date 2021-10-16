@@ -1,13 +1,12 @@
-import { useGetSuggestedPetsQuery } from '@graphql/queries';
 import React from 'react';
 import { StatusBar, View } from 'react-native';
 import { ActivityIndicator, Text, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { PaginatedList } from '@components';
+import { useGetSuggestedPetsQuery, Pet } from '@generated/graphql';
+import { PaginatedList } from '../../components';
 import { FollowPetCard } from './FollowPetCard';
 import getStyles from './styles';
-import { Pet } from '@types';
 
 export function FindPetsToFollow() {
   const theme = useTheme();

@@ -9,8 +9,8 @@ import {
 } from 'react-native-paper';
 import { NavigationProp } from '@react-navigation/core';
 
-import { useGetProfileQuery } from '@graphql/queries';
-import { Avatar } from '@components';
+import { useGetProfileQuery } from '@generated/graphql';
+import { Avatar } from '../../components';
 import getStyles from './styles';
 import { ProfileStackParamList } from '@types';
 import { Routes } from '@config';

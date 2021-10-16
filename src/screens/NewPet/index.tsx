@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { View, Pressable } from 'react-native';
 import { useTheme, Avatar, FAB, TextInput } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
-import { useMutation } from '@apollo/client';
 import { ReactNativeFile } from 'apollo-upload-client';
 import { NavigationProp } from '@react-navigation/native';
 
-import { Button, FilePickerDialog } from '@components';
-import { UPLOAD_PET_PICTURE, useAddPetMutation } from '@graphql/mutations';
-import { GET_PETS } from '@graphql/queries';
-import { PetsStackParamList } from '@types';
+import { Button, FilePickerDialog } from '../../components';
+import {
+  GetPetsDocument,
+  useUploadPetProfilePictureMutation,
+  useAddPetMutation,
+} from '@generated/graphql';
+import { PetsStackParamList } from '../../types';
 import getStyles from './styles';
 
 interface Props {
@@ -22,8 +24,7 @@ export function NewPet({ navigation }: Props) {
   const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState<string | undefined>(undefined);
   const [addPet] = useAddPetMutation();
-  const [uploadPicture] =
-    useMutation<{ addPicture: string; file: Blob }>(UPLOAD_PET_PICTURE);
+  const [uploadPicture] = useUploadPetProfilePictureMutation();
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -45,7 +46,7 @@ export function NewPet({ navigation }: Props) {
     try {
       const { data, errors } = await addPet({
         variables: { props: { name } },
-        refetchQueries: imageUri ? [] : [GET_PETS],
+        refetchQueries: imageUri ? [] : [GetPetsDocument],
       });
       if (errors || !data) {
         throw new Error('Failed to add pet');
@@ -63,7 +64,7 @@ export function NewPet({ navigation }: Props) {
               type: 'image/jpeg',
             }),
           },
-          refetchQueries: [GET_PETS],
+          refetchQueries: [GetPetsDocument],
         });
       }
 

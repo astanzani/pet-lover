@@ -1,10 +1,10 @@
 import React from 'react';
 import { Avatar, Chip, Title } from 'react-native-paper';
 
-import { useGetMeQuery } from '@graphql/queries';
+import { useMeQuery } from '@generated/graphql';
 
 export function UserCard() {
-  const { data, loading, error } = useGetMeQuery();
+  const { data, loading, error } = useMeQuery();
 
   if (loading) {
     return null;

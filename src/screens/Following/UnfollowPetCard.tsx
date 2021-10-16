@@ -2,11 +2,14 @@ import React from 'react';
 import { View } from 'react-native';
 import { useTheme, Text } from 'react-native-paper';
 
-import { Avatar, Button } from '@components';
-import { Pet } from '@types';
+import { Avatar, Button } from '../../components';
 import getStyles from './styles';
-import { useUnfollowPetMutation } from '@graphql/mutations';
-import { GET_FOLLOWEES, GET_PROFILE } from '@graphql/queries';
+import {
+  Pet,
+  GetFolloweesDocument,
+  GetProfileDocument,
+  useUnfollowPetMutation,
+} from '@generated/graphql';
 
 interface Props {
   pet: Pet;
@@ -20,7 +23,7 @@ export function UnfollowPetCard({ pet }: Props) {
   const onUnfollowPress = async () => {
     await unfollowPet({
       variables: { petId: pet.petId, ownerId: pet.userId },
-      refetchQueries: [GET_FOLLOWEES, GET_PROFILE],
+      refetchQueries: [GetFolloweesDocument, GetProfileDocument],
     });
   };
 
