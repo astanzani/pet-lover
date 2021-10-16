@@ -8,7 +8,11 @@ import {
   TouchableRipple,
   useTheme,
 } from 'react-native-paper';
-import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
+import {
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetScrollView,
+} from '@gorhom/bottom-sheet';
 
 import { Pet } from '@types';
 import getStyles from './styles';
@@ -62,7 +66,7 @@ export function PetPicker({ pets, selectedPet, onSelectPet }: Props) {
           />
         )}
       >
-        <View style={styles.petPickerModalContent}>
+        <BottomSheetScrollView style={styles.petPickerModalContent}>
           {pets.map((pet, index) => (
             <List.Item
               key={pet.petId}
@@ -87,7 +91,7 @@ export function PetPicker({ pets, selectedPet, onSelectPet }: Props) {
               }
             />
           ))}
-        </View>
+        </BottomSheetScrollView>
       </BottomSheetModal>
     </>
   );

@@ -63,10 +63,12 @@ export function Profile({ navigation }: Props) {
                   styles={styles.avatar}
                 />
               ))}
-              <Avatar
-                fallbackName={`+${followees.totalFound - 3}`}
-                styles={{ backgroundColor: theme.colors.accent }}
-              />
+              {followees.totalFound > 3 && (
+                <Avatar
+                  fallbackName={`+${followees.totalFound - 3}`}
+                  styles={{ backgroundColor: theme.colors.accent }}
+                />
+              )}
             </View>
             <IconButton icon="chevron-right" size={35} />
           </>
