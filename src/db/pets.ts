@@ -114,6 +114,7 @@ export async function scan(
   }
 
   const pets = result.Items.slice(0, first) as Pet[];
+  // TODO: This looks wrong - should probably be pets[pets.length-1]
   const lastPet = result.Items[result.Items.length - 1];
   const cursor =
     pets.length === first

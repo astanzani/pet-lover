@@ -57,3 +57,16 @@ query GetFollowees($first: Int, $cursor: String) {
     totalFound
   }
 }
+
+query GetFeedPosts($first: Int, $cursor: String) {
+  feedPosts(first: $first, cursor: $cursor) {
+    items {
+      postId
+      petId
+      text
+      pictures
+      createdAt
+    }
+    cursor
+  }
+}

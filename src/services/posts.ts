@@ -39,6 +39,7 @@ export async function addPost(input: AddPostInput): Promise<Post> {
     petId: input.petId,
     text: input.text,
     pictures: picsUrls,
+    createdAt: new Date().toISOString(),
   };
 
   const addedPost = await createOne(post);
@@ -47,7 +48,8 @@ export async function addPost(input: AddPostInput): Promise<Post> {
 
   await addPostToFeeds(
     followers.map((follower) => follower.userId),
-    addedPost.postId
+    addedPost.postId,
+    addedPost.petId
   );
 
   return addedPost;

@@ -1,7 +1,12 @@
 import { GraphQLUpload } from 'graphql-upload';
 
 import { Resolvers } from '@generated/graphql';
-import { usersQueries, petsQueries, followersQueries } from './queries';
+import {
+  usersQueries,
+  petsQueries,
+  followersQueries,
+  postsQueries,
+} from './queries';
 import {
   usersMutations,
   petsMutations,
@@ -15,6 +20,7 @@ export const resolvers: Resolvers = {
     ...usersQueries,
     ...petsQueries,
     ...followersQueries,
+    ...postsQueries,
   },
   Mutation: {
     ...usersMutations,

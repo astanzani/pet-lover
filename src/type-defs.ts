@@ -45,9 +45,16 @@ export const typeDefs = gql`
 
   type Post {
     postId: String!
+    createdAt: String!
     petId: String!
     text: String
     pictures: [String!]
+  }
+
+  type PaginatedPosts {
+    items: [Post!]!
+    cursor: String
+    totalFound: Int!
   }
 
   type FollowingRelationship {
@@ -74,5 +81,6 @@ export const typeDefs = gql`
     pets: [Pet!]!
     suggestedPets(first: Int = 10, cursor: String): PaginatedPets!
     followees(first: Int = 10, cursor: String): PaginatedPets!
+    feedPosts(first: Int = 10, cursor: String): PaginatedPosts!
   }
 `;
