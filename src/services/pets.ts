@@ -2,8 +2,8 @@ import { v4 } from 'uuid';
 import { FileUpload } from 'graphql-upload';
 
 import { AddPetInput, Pet, PaginatedPets } from '@generated/graphql';
-import { createOne, readAll, updateOne, scan } from '@db/pets';
-import { listAllFollowingRelationships } from '@services/followers';
+import { createPet, getUserPets, updatePet, listPets } from '@db/pets';
+import { listFollowingRelationships } from '@services/followers';
 import { uploadFile } from '@s3';
 import { FilterBuilder } from '@db/utils';
 import { Maybe } from '@generated/graphql';
@@ -17,7 +17,7 @@ export async function addPet(input: AddPetInput, userId: string): Promise<Pet> {
     petId: PET_ID_PREFIX + v4(),
   };
 
-  const addedPet = await createOne(pet);
+  const addedPet = await createPet(pet);
 
   if (addedPet == null) {
     throw new Error(`Failed to add user: ${JSON.stringify(pet)}`);
@@ -27,7 +27,7 @@ export async function addPet(input: AddPetInput, userId: string): Promise<Pet> {
 }
 
 export async function getPets(userId: string): Promise<Pet[]> {
-  const pets = await readAll(userId);
+  const pets = await getUserPets(userId);
 
   if (pets == null) {
     throw new Error(`Failed to get pets for user with id: ${userId}`);
@@ -54,7 +54,7 @@ export async function uploadProfilePicture(
   );
 
   // Update pet on DB with the url
-  await updateOne(petId, userId, { picture: url });
+  await updatePet(petId, userId, { picture: url });
 
   return url;
 }
@@ -64,7 +64,7 @@ export async function getSuggestedPets(
   first: number,
   cursor?: Maybe<string>
 ): Promise<PaginatedPets> {
-  const followees = (await listAllFollowingRelationships(userId)).map(
+  const followees = (await listFollowingRelationships(userId, 10000)).items.map(
     (r) => r.petId
   );
 
@@ -74,7 +74,7 @@ export async function getSuggestedPets(
     filter = filter.and().notIn('petId', followees);
   }
 
-  const pets = await scan(first, cursor, filter.build());
+  const pets = await listPets(first, cursor, filter.build());
 
   if (pets == null) {
     throw new Error('Failed to get suggested pets');

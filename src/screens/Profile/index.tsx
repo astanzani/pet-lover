@@ -26,6 +26,8 @@ export function Profile({ navigation }: Props) {
     // fetchPolicy: 'cache-and-network',
   });
 
+  console.log(JSON.stringify(data, null, 2));
+
   const goToFollowing = () => {
     navigation.navigate(Routes.FOLLOWING);
   };

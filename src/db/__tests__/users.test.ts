@@ -19,7 +19,7 @@ describe('Users DB operations', () => {
       email: 'user1@email.com',
     };
 
-    await dbOps.createOne(user);
+    await dbOps.createUser(user);
 
     expect(put).toBeCalledWith(
       expect.objectContaining({ Item: expect.objectContaining(user) })
@@ -37,7 +37,7 @@ describe('Users DB operations', () => {
       promise: jest.fn().mockResolvedValue({ Item: user }),
     });
 
-    const expected = await dbOps.readOne('USER#1');
+    const expected = await dbOps.getUser('USER#1');
 
     expect(expected).toEqual(user);
   });
@@ -47,7 +47,7 @@ describe('Users DB operations', () => {
       promise: jest.fn().mockResolvedValue({ Item: undefined }),
     });
 
-    const expected = await dbOps.readOne('USER#1');
+    const expected = await dbOps.getUser('USER#1');
 
     expect(expected).toBeNull();
   });

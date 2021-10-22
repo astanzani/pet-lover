@@ -1,59 +1,66 @@
 import { DynamoDB } from 'aws-sdk';
 
 import { FollowingRelationship } from '@generated/graphql';
+import { create, get, query, remove } from './common';
+import { PaginatedList } from '@types';
+import { Maybe } from 'graphql/jsutils/Maybe';
+import { decodeCursor } from './utils';
+import { paginate } from './pagination';
 
-export const createOne = async (
+interface FollowersTableKey {
+  userId: string;
+  petId: string;
+}
+
+export const createRelationship = async (
   input: FollowingRelationship
 ): Promise<FollowingRelationship> => {
-  const params = {
-    TableName: process.env.DYNAMODB_FOLLOWERS_TABLE,
-    Item: {
-      userId: input.userId,
-      petId: input.petId,
-      ownerId: input.ownerId,
-    },
-  };
-
-  const db = new DynamoDB.DocumentClient();
-  await db.put(params).promise();
-
-  return input;
+  const followersTable = process.env.DYNAMODB_FOLLOWERS_TABLE;
+  const relationship = await create(followersTable, input);
+  return relationship;
 };
 
-export const deleteOne = async (
+export const deleteRelationship = async (
   input: FollowingRelationship
-): Promise<FollowingRelationship> => {
-  const params = {
-    TableName: process.env.DYNAMODB_FOLLOWERS_TABLE,
-    Key: {
-      userId: input.userId,
-      petId: input.petId,
-    },
-  };
+): Promise<FollowingRelationship | null> => {
+  const followersTable = process.env.DYNAMODB_FOLLOWERS_TABLE;
+  const key = { userId: input.userId, petId: input.petId };
+  const item = await get<FollowingRelationship>(followersTable, key);
+  await remove(followersTable, key);
 
-  const db = new DynamoDB.DocumentClient();
-  await db.delete(params).promise();
-
-  return input;
+  return item;
 };
 
-export async function readAll(
-  id: string,
-  invertedIndex = false
-): Promise<FollowingRelationship[] | null> {
-  const keyName = invertedIndex ? 'petId' : 'userId';
+export async function listUserFollowees(
+  userId: string,
+  first: number,
+  lastCursor?: Maybe<string>
+): Promise<PaginatedList<FollowingRelationship> | null> {
+  const followersTable = process.env.DYNAMODB_FOLLOWERS_TABLE;
 
-  const params: DynamoDB.DocumentClient.QueryInput = {
-    TableName: process.env.DYNAMODB_FOLLOWERS_TABLE,
-    KeyConditionExpression: `${keyName} = :v1`,
-    ExpressionAttributeValues: {
-      ':v1': id,
-    },
-    IndexName: invertedIndex ? 'inverted-index' : undefined,
-  };
+  const followers = await query<FollowingRelationship>(followersTable, {
+    userId,
+  });
 
-  const db = new DynamoDB.DocumentClient();
-  const result = await db.query(params).promise();
+  return followers
+    ? paginate(followers, { hash: 'userId', range: 'petId' }, first, lastCursor)
+    : null;
+}
 
-  return (result.Items as FollowingRelationship[]) ?? null;
+export async function listPetFollowers(
+  petId: string,
+  first: number,
+  lastCursor?: Maybe<string>
+): Promise<PaginatedList<FollowingRelationship> | null> {
+  const followersTable = process.env.DYNAMODB_FOLLOWERS_TABLE;
+
+  const followers = await query<FollowingRelationship>(
+    followersTable,
+    { petId },
+    true
+  );
+
+  return followers
+    ? paginate(followers, { hash: 'userId', range: 'petId' }, first, lastCursor)
+    : null;
 }

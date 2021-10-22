@@ -1,11 +1,17 @@
-import { createOne, deleteOne, readAll } from '@db/followers';
-import { readMany } from '@db/pets';
+import {
+  createRelationship,
+  deleteRelationship,
+  listPetFollowers,
+  listUserFollowees,
+} from '@db/followers';
+import { getPets } from '@db/pets';
 import {
   PaginatedPets,
   Pet,
   FollowingRelationship,
   Maybe,
 } from '@generated/graphql';
+import { PaginatedList } from '@types';
 
 export const follow = (userId: string, petId: string, ownerId: string) => {
   const relationship: FollowingRelationship = {
@@ -14,23 +20,35 @@ export const follow = (userId: string, petId: string, ownerId: string) => {
     ownerId,
   };
 
-  return createOne(relationship);
+  return createRelationship(relationship);
 };
 
-export const unfollow = (userId: string, petId: string, ownerId: string) => {
+export const unfollow = async (
+  userId: string,
+  petId: string,
+  ownerId: string
+) => {
   const relationship: FollowingRelationship = {
     userId,
     petId,
     ownerId,
   };
 
-  return deleteOne(relationship);
+  const result = await deleteRelationship(relationship);
+
+  if (result == null) {
+    throw new Error(`failed to delete relationship`);
+  }
+
+  return result;
 };
 
-export const listAllFollowingRelationships = async (
-  userId: string
-): Promise<FollowingRelationship[]> => {
-  const relationships = await readAll(userId);
+export const listFollowingRelationships = async (
+  userId: string,
+  first: number,
+  cursor?: Maybe<string>
+): Promise<PaginatedList<FollowingRelationship>> => {
+  const relationships = await listUserFollowees(userId, first, cursor);
 
   if (relationships == null) {
     throw new Error(`cannot get followees for user; id = ${userId}`);
@@ -39,10 +57,12 @@ export const listAllFollowingRelationships = async (
   return relationships;
 };
 
-export const listAllFollowedRelationships = async (
-  petId: string
-): Promise<FollowingRelationship[]> => {
-  const relationships = await readAll(petId, true);
+export const listFollowedRelationships = async (
+  petId: string,
+  first: number,
+  cursor?: Maybe<string>
+): Promise<PaginatedList<FollowingRelationship>> => {
+  const relationships = await listPetFollowers(petId, first, cursor);
 
   if (relationships == null) {
     throw new Error(`cannot get followers for pet; id = ${petId}`);
@@ -56,17 +76,34 @@ export const getFollowees = async (
   first: number,
   lastCursor?: Maybe<string>
 ): Promise<PaginatedPets> => {
-  const allFolloweeIds = await listAllFollowingRelationships(userId);
-
-  const followees = await readMany(
-    allFolloweeIds.map((r) => ({ petId: r.petId, userId: r.ownerId })),
+  const followeeRelationships = await listUserFollowees(
+    userId,
     first,
     lastCursor
   );
+
+  console.log('FOLLOWEES RELATIONSHIPS: ', followeeRelationships);
+
+  if (followeeRelationships == null) {
+    throw new Error(`could not get followees for user; id = ${userId}`);
+  }
+
+  const followees = await getPets(
+    followeeRelationships.items.map((r) => ({
+      petId: r.petId,
+      userId: r.ownerId,
+    }))
+  );
+
+  console.log('FOLLOWEES: ', followees);
 
   if (followees == null) {
     throw new Error(`could not get followees for user; id = ${userId}`);
   }
 
-  return followees;
+  return {
+    items: followees,
+    cursor: followeeRelationships.cursor,
+    totalFound: followeeRelationships.totalFound,
+  };
 };

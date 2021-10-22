@@ -47,12 +47,22 @@ export const typeDefs = gql`
     postId: String!
     createdAt: String!
     petId: String!
+    userId: String!
     text: String
     pictures: [String!]
   }
 
-  type PaginatedPosts {
-    items: [Post!]!
+  type PostWithPet {
+    postId: String!
+    createdAt: String!
+    petId: String!
+    text: String
+    pictures: [String!]
+    pet: Pet!
+  }
+
+  type PaginatedPostsWithPets {
+    items: [PostWithPet!]!
     cursor: String
     totalFound: Int!
   }
@@ -81,6 +91,6 @@ export const typeDefs = gql`
     pets: [Pet!]!
     suggestedPets(first: Int = 10, cursor: String): PaginatedPets!
     followees(first: Int = 10, cursor: String): PaginatedPets!
-    feedPosts(first: Int = 10, cursor: String): PaginatedPosts!
+    feedPosts(first: Int = 10, cursor: String): PaginatedPostsWithPets!
   }
 `;

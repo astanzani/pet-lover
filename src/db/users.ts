@@ -1,27 +1,16 @@
-import { DynamoDB } from 'aws-sdk';
-
 import { User } from '@generated/graphql';
+import { create, get } from './common';
 
-export async function readOne(id: string): Promise<User | null> {
-  const params = {
-    TableName: process.env.DYNAMODB_USERS_TABLE,
-    Key: { userId: id },
-  };
-
-  const db = new DynamoDB.DocumentClient();
-  const result = await db.get(params).promise();
-
-  return (result.Item as User) ?? null;
+export async function getUser(id: string): Promise<User | null> {
+  const usersTable = process.env.DYNAMODB_USERS_TABLE;
+  const user = await get<User>(usersTable, {
+    userId: id,
+  });
+  return user;
 }
 
-export async function createOne(input: User): Promise<User> {
-  const params = {
-    TableName: process.env.DYNAMODB_USERS_TABLE,
-    Item: input,
-  };
-
-  const db = new DynamoDB.DocumentClient();
-  await db.put(params).promise();
-
-  return input;
+export async function createUser(input: User): Promise<User> {
+  const usersTable = process.env.DYNAMODB_USERS_TABLE;
+  const user = await create(usersTable, input);
+  return user;
 }

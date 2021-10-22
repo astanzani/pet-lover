@@ -10,7 +10,7 @@ describe('Users service', () => {
       email: 'user1@email.com',
     };
 
-    jest.spyOn(db, 'readOne').mockResolvedValue(user);
+    jest.spyOn(db, 'getUser').mockResolvedValue(user);
 
     const result = await service.getUserProfile('USER#1');
 
@@ -18,7 +18,7 @@ describe('Users service', () => {
   });
 
   it('throws if user not found', async () => {
-    jest.spyOn(db, 'readOne').mockResolvedValue(null);
+    jest.spyOn(db, 'getUser').mockResolvedValue(null);
 
     await expect(service.getUserProfile('USER#1')).rejects.toThrow();
   });
@@ -30,10 +30,10 @@ describe('Users service', () => {
       email: 'user1@email.com',
     };
 
-    jest.spyOn(db, 'createOne').mockResolvedValue(user);
+    jest.spyOn(db, 'createUser').mockResolvedValue(user);
 
     await service.addUser({ name: 'User 1', email: 'user1@email.com' }, '1');
 
-    expect(db.createOne).toBeCalledWith(expect.objectContaining(user));
+    expect(db.createUser).toBeCalledWith(expect.objectContaining(user));
   });
 });

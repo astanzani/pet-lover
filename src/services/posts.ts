@@ -3,7 +3,7 @@ import { FileUpload } from 'graphql-upload';
 
 import { createOne } from '@db/posts';
 import { uploadFile } from '@s3';
-import { listAllFollowedRelationships } from '@services/followers';
+import { listFollowedRelationships } from '@services/followers';
 import { addPostToFeeds } from '@services/feed';
 import { AddPostInput, Post } from '@generated/graphql';
 
@@ -28,7 +28,10 @@ async function uploadPostPictures(
   );
 }
 
-export async function addPost(input: AddPostInput): Promise<Post> {
+export async function addPost(
+  input: AddPostInput,
+  userId: string
+): Promise<Post> {
   const postId = POST_ID_PREFIX + v4();
   const pics = input.pictures;
 
@@ -37,6 +40,7 @@ export async function addPost(input: AddPostInput): Promise<Post> {
   const post: Post = {
     postId,
     petId: input.petId,
+    userId,
     text: input.text,
     pictures: picsUrls,
     createdAt: new Date().toISOString(),
@@ -44,12 +48,11 @@ export async function addPost(input: AddPostInput): Promise<Post> {
 
   const addedPost = await createOne(post);
 
-  const followers = await listAllFollowedRelationships(input.petId);
+  const followers = await listFollowedRelationships(input.petId, 10000);
 
   await addPostToFeeds(
-    followers.map((follower) => follower.userId),
-    addedPost.postId,
-    addedPost.petId
+    followers.items.map((follower) => follower.userId),
+    addedPost
   );
 
   return addedPost;
