@@ -66,6 +66,11 @@ query GetFeedPosts($first: Int, $cursor: String) {
       text
       pictures
       createdAt
+      pet {
+        petId
+        name
+        picture
+      }
     }
     cursor
   }

@@ -1,3 +1,4 @@
+import { Maybe } from '@generated/graphql';
 import React from 'react';
 import { View } from 'react-native';
 import {
@@ -15,19 +16,21 @@ const EXAMPLE_IMG =
 
 interface Props {
   title: string;
+  text?: Maybe<string>;
+  pictures?: Maybe<string[]>;
 }
 
-export function PostCard({ title }: Props) {
+export function PostCard({ title, text, pictures }: Props) {
   const theme = useTheme();
   const styles = getStyles(theme);
 
   return (
     <Card style={styles.root}>
       <Card.Title title={title} />
-      <Card.Content>
-        <Paragraph>Text Content</Paragraph>
-      </Card.Content>
-      <Card.Cover source={{ uri: EXAMPLE_IMG }} />
+      <Card.Content>{text && <Paragraph>{text}</Paragraph>}</Card.Content>
+      {pictures && pictures.length > 0 && (
+        <Card.Cover source={{ uri: pictures[0] }} />
+      )}
       <Card.Actions style={styles.actions}>
         <View style={styles.actionButtonGroup}>
           <IconButton

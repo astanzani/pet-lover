@@ -8,6 +8,7 @@ import { Routes } from '@config';
 import getStyles from './styles';
 import { RootStackParamList } from '@types';
 import { NavigationProp } from '@react-navigation/core';
+import { useApolloClient } from '@apollo/client';
 
 interface Props {
   navigation: NavigationProp<RootStackParamList>;
@@ -16,9 +17,11 @@ interface Props {
 export function More({ navigation }: Props) {
   const theme = useTheme();
   const styles = getStyles(theme);
+  const apolloClient = useApolloClient();
 
   const signOut = async () => {
     await Auth.signOut();
+    apolloClient.resetStore();
   };
 
   const goToFindPets = () => {
