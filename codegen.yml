@@ -8,6 +8,12 @@ generates:
       - 'typescript-operations'
       - 'typescript-resolvers'
       - 'typescript-react-apollo'
+  ./packages/web/src/generated/graphql.tsx:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-resolvers'
+      - 'typescript-react-apollo'
   ./packages/api/src/generated/graphql.ts:
     plugins:
       - 'typescript'

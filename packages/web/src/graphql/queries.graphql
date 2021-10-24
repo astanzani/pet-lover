@@ -1,0 +1,77 @@
+query Me {
+  me {
+    userId
+    name
+    email
+  }
+}
+
+query GetProfile($firstFollowees: Int, $cursor: String) {
+  me {
+    userId
+    name
+    email
+  }
+  followees(first: $firstFollowees, cursor: $cursor) {
+    items {
+      userId
+      petId
+      name
+      picture
+    }
+    cursor
+    totalFound
+  }
+}
+
+query GetPets {
+  pets {
+    userId
+    petId
+    name
+    picture
+  }
+}
+
+query GetSuggestedPets($first: Int, $cursor: String) {
+  suggestedPets(first: $first, cursor: $cursor) {
+    items {
+      userId
+      petId
+      name
+      picture
+    }
+    cursor
+  }
+}
+
+query GetFollowees($first: Int, $cursor: String) {
+  followees(first: $first, cursor: $cursor) {
+    items {
+      userId
+      petId
+      name
+      picture
+    }
+    cursor
+    totalFound
+  }
+}
+
+query GetFeedPosts($first: Int, $cursor: String) {
+  feedPosts(first: $first, cursor: $cursor) {
+    items {
+      postId
+      petId
+      text
+      pictures
+      createdAt
+      pet {
+        petId
+        name
+        picture
+      }
+    }
+    cursor
+  }
+}

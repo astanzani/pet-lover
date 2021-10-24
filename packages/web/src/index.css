@@ -1,0 +1,8 @@
+html {
+  font-family: 'Montserrat', sans-serif;
+}
+
+html,
+#root {
+  height: 100vh;
+}
