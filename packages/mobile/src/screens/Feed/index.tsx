@@ -13,10 +13,10 @@ export function Feed() {
 
   const { data, loading, error } = useGetFeedPostsQuery();
 
-  console.log('DATA: ');
-  console.log(JSON.stringify(data, null, 2));
-  console.log('ERROR: ');
-  console.log(JSON.stringify(error, null, 2));
+  // console.log('DATA: ');
+  // console.log(JSON.stringify(data, null, 2));
+  // console.log('ERROR: ');
+  // console.log(JSON.stringify(error, null, 2));
 
   if (loading) {
     return <ActivityIndicator />;

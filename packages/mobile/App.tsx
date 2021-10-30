@@ -10,6 +10,11 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { lightTheme, mapToNavigationTheme, apolloConfig } from './src/config';
 import { Main } from './src';
 
+// console.log('USER POOL ID: ', REACT_APP_USER_POOL_ID);
+// console.log('USER POOL CLIENT ID: ', REACT_APP_USER_POOL_CLIENT_ID);
+// console.log('REACT_APP_API_ENDPOINT: ', REACT_APP_API_ENDPOINT);
+// console.log('CONFIG: ', apolloConfig);
+
 Auth.configure({
   userPoolId: REACT_APP_USER_POOL_ID,
   userPoolWebClientId: REACT_APP_USER_POOL_CLIENT_ID,
