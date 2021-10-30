@@ -24,7 +24,7 @@ export function Home() {
         <Divider />
         <NewPost />
       </Box>
-      <Box sx={{ flex: 1 }}>Sidebar</Box>
+      <Box sx={{ flex: 1 }}>Sidebar Area</Box>
     </Box>
   );
 }
