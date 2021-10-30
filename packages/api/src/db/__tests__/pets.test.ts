@@ -87,14 +87,11 @@ describe('Pets DB operations', () => {
     );
     expect(pets?.totalFound).toBe(15);
 
-    mockedCommonOps.scan.mockResolvedValue(mockedPets.slice(10));
-
     const next = await dbOps.listPets(10, pets?.cursor);
 
     expect(next?.items).toHaveLength(5);
     expect(next?.items).toEqual(mockedPets.slice(10));
     expect(next?.cursor).toBeUndefined();
-    // Total found will not work when not starting from beginning
     expect(next?.totalFound).toBe(15);
   });
 

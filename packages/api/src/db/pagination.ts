@@ -51,17 +51,12 @@ export function paginate<T extends { [key: string]: any }>(
 ): PaginatedList<T> {
   const totalFound = items.length;
   const startKey = lastCursor ? decodeCursor(lastCursor) : undefined;
-  console.log('START KEY: ', startKey);
   const startKeyIndex = startKey
     ? items.findIndex((item) => compareKey(keyDef, item, startKey))
     : -1;
-  console.log('START KEY INDEX: ', startKeyIndex);
   const startFromIndex = startKeyIndex === -1 ? 0 : startKeyIndex + 1;
-  console.log('START FROM INDEX: ', startFromIndex);
   const firstItems = items.slice(startFromIndex, startFromIndex + first);
-  console.log('FIRST ITEMS: ', firstItems);
   const lastReturnedItem = firstItems[firstItems.length - 1];
-  console.log('LAST RETURNED: ', lastReturnedItem);
 
   const cursor =
     firstItems.length === first

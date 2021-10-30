@@ -1,14 +1,15 @@
 overwrite: true
 schema: './packages/api/src/type-defs.ts'
-documents: './packages/mobile/src/**/*.graphql'
 generates:
   ./packages/mobile/src/generated/graphql.tsx:
+    documents: './packages/mobile/src/**/*.graphql'
     plugins:
       - 'typescript'
       - 'typescript-operations'
       - 'typescript-resolvers'
       - 'typescript-react-apollo'
   ./packages/web/src/generated/graphql.tsx:
+    documents: './packages/web/src/**/*.graphql'
     plugins:
       - 'typescript'
       - 'typescript-operations'

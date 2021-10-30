@@ -110,19 +110,6 @@ describe('DB common functions', () => {
       });
     });
 
-    it('queries the DB starting from a key', async () => {
-      await DbOps.query('table', { key: 'value' });
-
-      expect(query).toBeCalledWith({
-        TableName: 'table',
-        KeyConditionExpression: 'key = :v1',
-        ExpressionAttributeValues: {
-          ':v1': 'value',
-        },
-        ExclusiveStartKey: { key: 'start from' },
-      });
-    });
-
     it('queries the DB using an inverted index', async () => {
       await DbOps.query('table', { key: 'value' }, true);
 
@@ -132,7 +119,6 @@ describe('DB common functions', () => {
         ExpressionAttributeValues: {
           ':v1': 'value',
         },
-        ExclusiveStartKey: { key: 'start from' },
         IndexName: 'inverted-index',
       });
     });
@@ -150,7 +136,6 @@ describe('DB common functions', () => {
 
       expect(scan).toBeCalledWith({
         TableName: 'table',
-        ExclusiveStartKey: { some: 'key' },
       });
     });
 
@@ -161,7 +146,6 @@ describe('DB common functions', () => {
 
       expect(scan).toBeCalledWith({
         TableName: 'table',
-        ExclusiveStartKey: { some: 'key' },
         FilterExpression: filter?.expression,
         ExpressionAttributeValues: filter?.values,
       });
