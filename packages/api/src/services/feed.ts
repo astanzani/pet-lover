@@ -1,3 +1,5 @@
+import { uniqBy } from 'lodash';
+
 import {
   addPostToFeeds as addPostToFeedsDb,
   listUserFeedItems,
@@ -46,10 +48,13 @@ export const getFeedPosts = async (
     throw new Error(`cannot get posts for user; userId = ${userId}`);
   }
 
-  const petsKeys = posts.map((post) => ({
-    petId: post.petId,
-    userId: post.userId,
-  }));
+  const petsKeys = uniqBy(
+    posts.map((post) => ({
+      petId: post.petId,
+      userId: post.userId,
+    })),
+    'petId'
+  );
 
   const pets = await getPets(petsKeys);
 
