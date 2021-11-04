@@ -112,7 +112,8 @@ async function create<T>(
 async function query<T>(
   tableName: string,
   hashKey: DynamoDB.DocumentClient.Key,
-  invertedIndex = false
+  invertedIndex = false,
+  sortDescending = false
 ): Promise<Array<T> | null> {
   const keyField = Object.keys(hashKey)[0];
   const params: DynamoDB.DocumentClient.QueryInput = {
@@ -122,6 +123,7 @@ async function query<T>(
       ':v1': hashKey[keyField],
     },
     IndexName: invertedIndex ? 'inverted-index' : undefined,
+    ScanIndexForward: !sortDescending,
   };
 
   const db = new DynamoDB.DocumentClient();

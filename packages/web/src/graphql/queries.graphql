@@ -67,6 +67,7 @@ query GetFeedPosts($first: Int, $cursor: String) {
       pictures
       createdAt
       pet {
+        userId
         petId
         name
         picture

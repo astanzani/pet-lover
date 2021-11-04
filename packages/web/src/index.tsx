@@ -4,7 +4,7 @@ import { Auth } from '@aws-amplify/auth';
 import { ApolloProvider, ApolloClient } from '@apollo/client';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 
-import { apolloConfig, theme } from './config';
+import { apolloConfig, theme, darkTheme } from './config';
 import reportWebVitals from './reportWebVitals';
 import { App } from './App';
 import './index.css';
@@ -16,10 +16,15 @@ Auth.configure({
 
 const client = new ApolloClient(apolloConfig);
 
+const params = new URLSearchParams(window.location.search);
+const isDark = params.get('theme') === 'dark';
+
+const chosenTheme = isDark ? darkTheme : theme;
+
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={chosenTheme}>
         <CssBaseline />
         <App />
       </ThemeProvider>

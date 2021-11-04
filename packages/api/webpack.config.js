@@ -42,6 +42,7 @@ module.exports = {
       '@s3': path.resolve(__dirname, './src/s3'),
       '@generated/graphql': path.resolve(__dirname, './src/generated/graphql'),
     },
+    mainFields: ['main'],
   },
   target: 'node',
 };

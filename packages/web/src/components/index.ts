@@ -4,3 +4,7 @@ export * from './RedirectIfLoggedInRoute';
 export * from './LeftNav';
 export * from './NewPost';
 export * from './PetPicker';
+export * from './ErrorBoundary';
+export * from './SideBar';
+export * from './PostCard';
+export * from './ImageGallery';

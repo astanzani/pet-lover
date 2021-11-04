@@ -139,6 +139,18 @@ export function Login() {
                 >
                   Login
                 </LoadingButton>
+                <LoadingButton
+                  loading={false}
+                  variant="contained"
+                  type="submit"
+                  onClick={login.bind(null, {
+                    email: 'arnaldo.stanzani+1@gmail.com',
+                    password: 'Password!123',
+                  })}
+                  sx={{ marginTop: 2 }}
+                >
+                  Login with test account
+                </LoadingButton>
               </Form>
             )}
           </Formik>

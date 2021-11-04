@@ -37,7 +37,12 @@ export const listUserFeedItems = async (
   lastCursor?: Maybe<string>
 ): Promise<PaginatedList<FeedsTableItem> | null> => {
   const feedsTable = process.env.DYNAMODB_FEEDS_TABLE;
-  const feedItems = await query<FeedsTableItem>(feedsTable, { userId });
+  const feedItems = await query<FeedsTableItem>(
+    feedsTable,
+    { userId },
+    false,
+    true
+  );
 
   return feedItems
     ? paginate(

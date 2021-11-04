@@ -1,20 +1,30 @@
 import React, { useState } from 'react';
-import { Avatar, Box, CircularProgress, Typography } from '@mui/material';
-// import { useMeQuery } from 'generated/graphql';
-import { PetPicker } from 'components';
-import { useGetPetsQuery } from 'generated/graphql';
+import {
+  Box,
+  CircularProgress,
+  TextField,
+  Stack,
+  IconButton,
+} from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { Image, Videocam, AttachFile } from '@mui/icons-material';
+
+import { ImageGallery, PetPicker } from 'components';
+import { useAddPostMutation, useGetPetsQuery } from 'generated/graphql';
 
 export function NewPost() {
   const { data, loading, error } = useGetPetsQuery();
+  const [addPost, { loading: submitting }] = useAddPostMutation();
   const [selectedPetIdx, setSelectedPetIdx] = useState(0);
+  const [text, setText] = useState('');
+  const [images, setImages] = useState<File[]>([]);
 
   if (loading) {
     return <CircularProgress />;
   }
 
   if (error || !data) {
-    console.log(JSON.stringify(error, null, 2));
-    return null;
+    throw new Error('cannot get user pets');
   }
 
   const { pets } = data;
@@ -29,6 +39,37 @@ export function NewPost() {
     }
   };
 
+  const handlePickedImages = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const picked = e.target.files;
+
+    if (picked == null) {
+      return;
+    }
+
+    const files = Array.from(picked);
+
+    setImages([...images, ...files]);
+  };
+
+  const hasContent = () => {
+    const hasImages = images.length > 0;
+    const hasText = !!text.trim();
+
+    return hasImages || hasText;
+  };
+
+  const post = async () => {
+    await addPost({
+      variables: {
+        props: { petId: selectedPet.petId, text, pictures: images },
+      },
+    });
+    setText('');
+    setImages([]);
+  };
+
+  const imgSrcs = images.map((img) => URL.createObjectURL(img));
+
   return (
     <Box
       sx={{
@@ -41,6 +82,53 @@ export function NewPost() {
         selectedPet={selectedPet}
         onSelect={handleSelectPet}
       />
+      <TextField
+        multiline={true}
+        label="What's your pet up to?"
+        fullWidth={true}
+        minRows={2}
+        maxRows={4}
+        onChange={(e) => setText(e.target.value)}
+        value={text}
+      />
+      {images.length > 0 && <ImageGallery images={imgSrcs} />}
+      <Box display="flex" alignItems="center" justifyContent="space-between">
+        <Stack
+          direction="row"
+          paddingTop={1}
+          paddingRight={1}
+          paddingBottom={1}
+        >
+          <label htmlFor="icon-button-file">
+            <input
+              style={{ display: 'none' }}
+              accept="image/*"
+              id="icon-button-file"
+              type="file"
+              multiple={true}
+              onChange={handlePickedImages}
+            />
+            <IconButton aria-label="upload picture" component="span">
+              <Image fontSize="small" />
+            </IconButton>
+          </label>
+          <IconButton>
+            <Videocam fontSize="small" />
+          </IconButton>
+          <IconButton>
+            <AttachFile fontSize="small" />
+          </IconButton>
+        </Stack>
+        <LoadingButton
+          color="primary"
+          variant="contained"
+          disabled={!hasContent()}
+          onClick={post}
+          loading={submitting}
+        >
+          Post
+        </LoadingButton>
+      </Box>
     </Box>
   );
 }

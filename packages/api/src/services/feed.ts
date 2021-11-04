@@ -58,19 +58,21 @@ export const getFeedPosts = async (
 
   const pets = await getPets(petsKeys);
 
-  const postsWithPets: PostWithPet[] = posts.map((post) => {
-    const pet = pets?.find((p) => p.petId === post.petId);
+  const postsWithPets: PostWithPet[] = posts
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .map((post) => {
+      const pet = pets?.find((p) => p.petId === post.petId);
 
-    if (pet == null) {
-      throw new Error(`cannot find pet for post; id = ${post.postId}`);
-    }
+      if (pet == null) {
+        throw new Error(`cannot find pet for post; id = ${post.postId}`);
+      }
 
-    return {
-      ...post,
-      pet,
-      __typename: 'PostWithPet',
-    };
-  });
+      return {
+        ...post,
+        pet,
+        __typename: 'PostWithPet',
+      };
+    });
 
   return {
     items: postsWithPets,

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Box, Divider, Typography } from '@mui/material';
 
-import { LeftNav, NewPost } from 'components';
+import { LeftNav, NewPost, SideBar } from 'components';
 import { Routes } from 'config';
+import { Feed } from './Feed';
 
 export function Home() {
   return (
@@ -10,6 +11,7 @@ export function Home() {
       sx={{
         display: 'flex',
         padding: 1,
+        height: '100%',
         maxWidth: 1300,
         marginLeft: 'auto',
         marginRight: 'auto',
@@ -23,8 +25,12 @@ export function Home() {
         </Typography>
         <Divider />
         <NewPost />
+        <Divider />
+        <Feed />
       </Box>
-      <Box sx={{ flex: 1 }}>Sidebar Area</Box>
+      <Box sx={{ flex: 1 }}>
+        <SideBar />
+      </Box>
     </Box>
   );
 }
