@@ -107,6 +107,8 @@ describe('DB common functions', () => {
         ExpressionAttributeValues: {
           ':v1': 'value',
         },
+        IndexName: undefined,
+        ScanIndexForward: true,
       });
     });
 
@@ -120,6 +122,7 @@ describe('DB common functions', () => {
           ':v1': 'value',
         },
         IndexName: 'inverted-index',
+        ScanIndexForward: true,
       });
     });
   });
