@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { CircularProgress } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 
 interface Props<T> {
   items: T[];
@@ -50,7 +50,11 @@ export function PaginatedList<T>({
         </li>
       ))}
       <div style={{ height: 1 }} ref={target} />
-      {loadingMore && <CircularProgress />}
+      {loadingMore && (
+        <Box display="flex" alignItems="center" justifyContent="center">
+          <CircularProgress />
+        </Box>
+      )}
     </ul>
   );
 }

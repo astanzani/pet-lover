@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from '@mui/system';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, Typography } from '@mui/material';
 
 import { PaginatedList, PostCard } from 'components';
 import { PostWithPet, useGetFeedPostsQuery } from 'generated/graphql';
@@ -9,7 +9,11 @@ export function Feed() {
   const { data, loading, error, fetchMore } = useGetFeedPostsQuery();
 
   if (loading) {
-    return <CircularProgress />;
+    return (
+      <Box display="flex" alignItems="center" justifyContent="center">
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (error || !data) {
@@ -34,6 +38,13 @@ export function Feed() {
         renderItem={renderItem}
         loadMore={loadMore}
       />
+      {!feedPosts.cursor && (
+        <Box display="flex" alignItems="center" justifyContent="center">
+          <Typography variant="caption" gutterBottom={true}>
+            No more posts to show
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 }

@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  CircularProgress,
-  TextField,
-  Stack,
-  IconButton,
-} from '@mui/material';
+import { Box, TextField, Stack, IconButton } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Image, Videocam, AttachFile } from '@mui/icons-material';
 
@@ -20,7 +14,7 @@ export function NewPost() {
   const [images, setImages] = useState<File[]>([]);
 
   if (loading) {
-    return <CircularProgress />;
+    return null;
   }
 
   if (error || !data) {
