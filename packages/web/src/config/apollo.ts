@@ -5,7 +5,9 @@ import {
   ApolloClientOptions,
   InMemoryCache,
   NormalizedCacheObject,
+  Reference,
 } from '@apollo/client';
+import { PaginatedList } from 'types';
 
 const uploadLink = createUploadLink({
   uri: process.env.REACT_APP_API_ENDPOINT,
@@ -27,5 +29,32 @@ const authLink = setContext((_, { headers }) => {
 
 export const apolloConfig: ApolloClientOptions<NormalizedCacheObject> = {
   link: authLink.concat(uploadLink),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          feedPosts: {
+            keyArgs: false,
+            merge(
+              existing: PaginatedList<Reference> = { items: [], totalFound: 0 },
+              incoming: PaginatedList<Reference>
+            ) {
+              return merge(existing, incoming);
+            },
+          },
+        },
+      },
+    },
+  }),
+};
+
+const merge = (
+  existing: PaginatedList<Reference>,
+  incoming: PaginatedList<Reference>
+): PaginatedList<Reference> => {
+  return {
+    cursor: incoming.cursor,
+    items: [...existing.items, ...incoming.items],
+    totalFound: incoming.totalFound,
+  };
 };

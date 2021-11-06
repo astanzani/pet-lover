@@ -8,3 +8,4 @@ export * from './ErrorBoundary';
 export * from './SideBar';
 export * from './PostCard';
 export * from './ImageGallery';
+export * from './PaginatedList';

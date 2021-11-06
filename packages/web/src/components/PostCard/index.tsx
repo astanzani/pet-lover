@@ -5,7 +5,6 @@ import {
   CardActions,
   CardContent,
   Avatar,
-  CardMedia,
   Divider,
   Typography,
   IconButton,

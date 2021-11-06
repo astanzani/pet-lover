@@ -2,11 +2,11 @@ import React from 'react';
 import { Box } from '@mui/system';
 import { CircularProgress } from '@mui/material';
 
-import { PostCard } from 'components';
-import { useGetFeedPostsQuery } from 'generated/graphql';
+import { PaginatedList, PostCard } from 'components';
+import { PostWithPet, useGetFeedPostsQuery } from 'generated/graphql';
 
 export function Feed() {
-  const { data, loading, error } = useGetFeedPostsQuery();
+  const { data, loading, error, fetchMore } = useGetFeedPostsQuery();
 
   if (loading) {
     return <CircularProgress />;
@@ -18,11 +18,22 @@ export function Feed() {
 
   const { feedPosts } = data;
 
+  const renderItem = (item: PostWithPet) => <PostCard post={item} />;
+  const keyExtractor = (item: PostWithPet) => item.postId;
+  const loadMore = async () => {
+    if (feedPosts.cursor != null) {
+      await fetchMore({ variables: { cursor: feedPosts.cursor } });
+    }
+  };
+
   return (
     <Box>
-      {feedPosts.items.map((item) => (
-        <PostCard key={item.postId} post={item} />
-      ))}
+      <PaginatedList
+        items={feedPosts.items}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        loadMore={loadMore}
+      />
     </Box>
   );
 }
